@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-    title: "Website",
+    title: "산책자",
 };
 
 export default function RootLayout({
