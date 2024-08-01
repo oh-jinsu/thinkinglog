@@ -3,33 +3,52 @@
 import { cn } from "@/lib/element";
 import { DetailedHTMLProps, HTMLAttributes, useEffect, useRef } from "react";
 
-export type Props = DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
+export type Props = DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> & {
+    onResize?: () => void;
+};
 
-export default function FullscreenContainer({ className, children, ...props }: Props) {
+export default function FullscreenContainer({ className, children, onResize, ...props }: Props) {
     const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        const { current } = containerRef;
+        const container = containerRef.current;
 
-        if (!current) {
+        if (!container) {
             return;
         }
 
-        if (!visualViewport) {
-            return;
-        }
+        const resize = () => {
+            container.style.height = `${visualViewport?.height}px`;
 
-        const onResize = () => {
-            current.style.height = `${visualViewport?.height}px`;
+            onResize?.();
         };
 
-        onResize();
+        resize();
 
-        visualViewport.addEventListener("resize", onResize);
-    }, []);
+        visualViewport?.addEventListener("resize", resize);
+
+        const scroll = () => {
+            if (scrollY > 0) {
+                window.scrollTo({
+                    top: 0,
+                    behavior: "instant",
+                });
+            }
+        };
+
+        scroll();
+
+        window.addEventListener("scroll", scroll);
+
+        return () => {
+            window.removeEventListener("scroll", scroll);
+
+            visualViewport?.removeEventListener("resize", resize);
+        };
+    }, [onResize]);
 
     return (
-        <div ref={containerRef} {...props} className={cn("h-svh", className)}>
+        <div ref={containerRef} {...props} className={cn("fixed w-full", className)}>
             {children}
         </div>
     );
