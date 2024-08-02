@@ -1,7 +1,7 @@
 import { data } from "@/backend/db";
 import { storage } from "@/backend/storage";
 import EditorProvider from "@/frontend/components/editor/context";
-import MarkdownEditor from "@/frontend/components/editor/editor";
+import WysiwygEditor from "@/frontend/components/editor/editor";
 import SaveButton from "@/frontend/components/editor/save_button";
 import FullscreenContainer from "@/frontend/components/fullscreen_container";
 import UserHeader from "@/frontend/user_header";
@@ -74,7 +74,7 @@ export default async function Page({ params }: Props) {
                         </button>
                     </div>
                 </UserHeader>
-                <MarkdownEditor />
+                <WysiwygEditor />
             </FullscreenContainer>
         </EditorProvider>
     );

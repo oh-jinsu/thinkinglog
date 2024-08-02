@@ -4,15 +4,17 @@ import { MdAddPhotoAlternate } from "react-icons/md";
 import { useContext } from "react";
 import useImageUpload from "../../hooks/image_upload";
 import { EditorContext } from "./context";
+import { wysiwygStyle } from "@/frontend/styles";
+import { cn } from "@/frontend/lib/element";
 
-export default function MarkdownEditor() {
+export default function WysiwygEditor() {
     const { contentRef } = useContext(EditorContext);
 
     const [upload, Input] = useImageUpload();
 
     return (
         <>
-            <iframe id="content" ref={contentRef} className="flex-1 border-t" />
+            <div id="content" className={cn(wysiwygStyle, "overflow-auto")} contentEditable ref={contentRef} />
             <div className="w-full h-[56px] border-t flex p-1 bg-white">
                 <button
                     type="button"

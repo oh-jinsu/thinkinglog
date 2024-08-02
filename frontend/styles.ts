@@ -5,3 +5,5 @@ export const inputStyle =
 
 export const buttonStyle =
     "cursor-pointer h-[40px] px-4 bg-primary text-white rounded-md outline-none hover:bg-blue-500 transition-colors duration-200 whitespace-nowrap";
+
+export const wysiwygStyle = "flex-1 p-4 pb-10 outline-none";

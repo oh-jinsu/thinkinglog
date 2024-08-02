@@ -67,7 +67,6 @@ export default async function Page({ params }: Props) {
 
     return (
         <UserLayout userId={userId} actions={<Link href={`/users/${user.id}/posts/new`}>새 글 쓰기</Link>}>
-            <hr />
             <ol>
                 {posts.map((post) => (
                     <li key={post.id}>

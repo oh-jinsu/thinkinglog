@@ -15,13 +15,7 @@ export function useEditorSave(postId: string) {
             return;
         }
 
-        const doc = content.contentDocument;
-
-        if (!doc) {
-            return;
-        }
-
-        const html = doc.body.innerHTML;
+        const html = content.innerHTML;
 
         const blob = new Blob([html], { type: "text/html" });
 

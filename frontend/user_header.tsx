@@ -19,7 +19,7 @@ export default async function UserHeader({ userId, children }: Props) {
     }
 
     return (
-        <div className="flex justify-between items-center px-4 py-4">
+        <div className="flex justify-between items-center px-4 py-4 border-b">
             <Link href={`/users/${user.id}`}>{user.name}</Link>
             {children}
         </div>

@@ -1,8 +1,10 @@
 import { data } from "@/backend/db";
 import { storage } from "@/backend/storage";
+import { wysiwygStyle } from "@/frontend/styles";
 import UserLayout from "@/frontend/user_layout";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { MdEdit } from "react-icons/md";
 
 type Props = {
     params: {
@@ -55,10 +57,16 @@ export default async function Page({ params }: Props) {
     const html = new TextDecoder().decode(body);
 
     return (
-        <UserLayout userId={user.id} actions={<Link href={`/users/${user.id}/posts/${post.id}/edit`}>수정하기</Link>}>
-            <hr />
+        <UserLayout
+            userId={user.id}
+            actions={
+                <Link href={`/users/${user.id}/posts/${post.id}/edit`}>
+                    <MdEdit size={20} />
+                </Link>
+            }
+        >
             <div
-                className="p-4"
+                className={wysiwygStyle}
                 dangerouslySetInnerHTML={{
                     __html: html,
                 }}

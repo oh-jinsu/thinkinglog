@@ -46,28 +46,22 @@ export default function useImageUpload() {
                 return;
             }
 
-            const doc = content.contentDocument;
-
-            if (!doc) {
-                return;
-            }
-
             {
-                const selection = doc.getSelection();
+                const selection = document.getSelection();
 
                 if (selection && selection.rangeCount > 0) {
                     const range = selection.getRangeAt(0);
 
                     range.insertNode(img);
                 } else {
-                    doc.body.appendChild(img);
+                    content.appendChild(img);
                 }
             }
 
             const appendLinebreak = (previous: HTMLElement) => {
-                const div = doc.createElement("div");
+                const div = document.createElement("div");
 
-                const br = doc.createElement("br");
+                const br = document.createElement("br");
 
                 div.appendChild(br);
 
@@ -78,17 +72,17 @@ export default function useImageUpload() {
 
             const linebreak = appendLinebreak(img);
 
-            doc.body.focus();
+            content.focus();
 
             linebreak.scrollIntoView();
 
-            const selection = doc.getSelection();
+            const selection = document.getSelection();
 
             if (!selection) {
                 return;
             }
 
-            const range = doc.createRange();
+            const range = document.createRange();
 
             range.setStartAfter(linebreak);
 

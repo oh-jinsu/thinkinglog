@@ -3,10 +3,10 @@
 import { createContext, useEffect, useRef } from "react";
 
 export type EditorContextProps = {
-    contentRef: React.MutableRefObject<HTMLIFrameElement | null>;
+    contentRef: React.MutableRefObject<HTMLDivElement | null>;
 };
 
-export const EditorContext = createContext({} as any);
+export const EditorContext = createContext<EditorContextProps>({} as any);
 
 type Props = {
     children: React.ReactNode;
@@ -14,7 +14,7 @@ type Props = {
 };
 
 export default function EditorProvider({ children, html }: Props) {
-    const contentRef = useRef<HTMLIFrameElement>(null);
+    const contentRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const content = contentRef.current;
@@ -23,23 +23,7 @@ export default function EditorProvider({ children, html }: Props) {
             return;
         }
 
-        const doc = content.contentDocument;
-
-        if (!doc) {
-            return;
-        }
-
-        const styleSheet = doc.createElement("link");
-
-        styleSheet.rel = "stylesheet";
-
-        styleSheet.href = "/editor.css";
-
-        doc.head.appendChild(styleSheet);
-
-        doc.designMode = "on";
-
-        doc.body.innerHTML = html;
+        content.innerHTML = html;
     }, [contentRef, html]);
 
     const value = {
