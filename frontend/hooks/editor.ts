@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-export function useEditor(contentRef: React.RefObject<HTMLIFrameElement>) {
+export function useEditor(contentRef: React.RefObject<HTMLIFrameElement>, html: string) {
     return useEffect(() => {
         const content = contentRef.current;
 
@@ -23,5 +23,7 @@ export function useEditor(contentRef: React.RefObject<HTMLIFrameElement>) {
         doc.head.appendChild(styleSheet);
 
         doc.designMode = "on";
-    }, [contentRef]);
+
+        doc.body.innerHTML = html;
+    }, [contentRef, html]);
 }

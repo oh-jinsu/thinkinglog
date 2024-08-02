@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@/lib/element";
+import { cn } from "@/frontend/lib/element";
 import { DetailedHTMLProps, HTMLAttributes, useEffect, useRef } from "react";
 
 export type Props = DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> & {
@@ -48,7 +48,11 @@ export default function FullscreenContainer({ className, children, onResize, ...
     }, [onResize]);
 
     return (
-        <div ref={containerRef} {...props} className={cn("fixed w-full", className)}>
+        <div
+            ref={containerRef}
+            {...props}
+            className={cn("fixed left-0 right-0 mx-auto max-w-[800px] w-full", className)}
+        >
             {children}
         </div>
     );

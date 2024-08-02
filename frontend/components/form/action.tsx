@@ -1,6 +1,6 @@
 "use client";
 
-import { PromiseOr } from "@/lib/promise";
+import { PromiseOr } from "@/frontend/lib/promise";
 import { DetailedHTMLProps, FormHTMLAttributes, useEffect } from "react";
 import { useFormState } from "react-dom";
 import { ServerActionState } from "../../actions/action";

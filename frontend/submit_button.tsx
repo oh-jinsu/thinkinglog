@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@/lib/element";
+import { cn } from "@/frontend/lib/element";
 import { ButtonHTMLAttributes, DetailedHTMLProps, ReactNode } from "react";
 import { useFormStatus } from "react-dom";
 import { buttonStyle } from "./styles";

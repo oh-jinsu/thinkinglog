@@ -3,18 +3,18 @@
 import { signInUseCase } from "@/backend/usecases/auth/signin";
 import { ServerAction } from "../action";
 import { cookies } from "next/headers";
-import { flags } from "@/lib/cookie";
+import { flags } from "@/backend/lib/cookie";
 import { redirect } from "next/navigation";
 import { decodeJwt } from "jose";
 
 export const SignInServerAction = ServerAction(async (formData: FormData) => {
-    const username = formData.get("username");
+    const id = formData.get("id");
 
     const password = formData.get("password");
 
     const redirectUrl = formData.get("redirectUrl");
 
-    if (typeof username !== "string") {
+    if (typeof id !== "string") {
         throw new Error("아이디를 입력해 주세요.");
     }
 
@@ -26,7 +26,7 @@ export const SignInServerAction = ServerAction(async (formData: FormData) => {
         throw new Error("경로가 올바르지 않아요.");
     }
 
-    const { accessToken, refreshToken } = await signInUseCase({ username, password });
+    const { accessToken, refreshToken } = await signInUseCase({ id, password });
 
     cookies().set(
         "accessToken",

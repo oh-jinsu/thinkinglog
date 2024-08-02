@@ -1,4 +1,4 @@
-import { PromiseOr } from "@/lib/promise";
+import { PromiseOr } from "@/frontend/lib/promise";
 import { isRedirectError } from "next/dist/client/components/redirect";
 
 export type ServerActionState = {

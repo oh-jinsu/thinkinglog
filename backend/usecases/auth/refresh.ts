@@ -1,8 +1,8 @@
 import { data } from "@/backend/db";
 import { UseCase } from "@/backend/usecase";
-import { AccessToken } from "@/lib/jwt";
+import { AccessToken, RefreshToken } from "@/backend/lib/jwt";
 import { compare } from "bcryptjs";
-import { decodeJwt } from "jose";
+import { UnauthorizedException } from "../exceptions";
 
 export type RefreshAuthParams = {
     refreshToken: string;
@@ -13,10 +13,16 @@ export type RefreshAuthResult = {
 };
 
 export const refreshAuthUseCase: UseCase<RefreshAuthParams, RefreshAuthResult> = async ({ refreshToken }) => {
-    const { userId } = decodeJwt(refreshToken);
+    const payload = await new RefreshToken().verify(refreshToken);
+
+    if (!payload) {
+        throw new UnauthorizedException();
+    }
+
+    const { userId } = payload;
 
     if (typeof userId !== "string") {
-        throw Error("토큰이 올바르지 않아요.");
+        throw new UnauthorizedException();
     }
 
     const user = await data.query.userTable.findFirst({
@@ -34,12 +40,10 @@ export const refreshAuthUseCase: UseCase<RefreshAuthParams, RefreshAuthResult> =
     }
 
     if (await compare(user.refreshToken, refreshToken)) {
-        throw Error("토큰이 올바르지 않아요.");
+        throw new UnauthorizedException();
     }
 
-    const accessToken = await new AccessToken().sign(
-        { userId: user.id },
-    );
+    const accessToken = await new AccessToken().sign({ userId: user.id });
 
     return {
         accessToken,

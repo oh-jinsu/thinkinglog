@@ -1,4 +1,4 @@
-import { cn } from "@/lib/element";
+import { cn } from "@/frontend/lib/element";
 import React, { forwardRef } from "react";
 import { inputStyle } from "../../styles";
 

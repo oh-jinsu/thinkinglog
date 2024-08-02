@@ -11,22 +11,23 @@ export const userTable = pgTable("users", {
 });
 
 export const credentialTable = pgTable("credentials", {
-    id: uuid("id").primaryKey(),
-    userId: uuid("userId")
-        .notNull()
-        .references(() => userTable.id),
-    username: text("username").notNull(),
+    id: text("id").primaryKey(),
+    userId: uuid("userId").notNull(),
     password: text("password").notNull(),
     updatedAt: timestamp("updatedAt").defaultNow().notNull(),
     createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 
 export const credentialRelations = relations(credentialTable, ({ one }) => ({
-    user: one(userTable),
+    user: one(userTable, {
+        fields: [credentialTable.userId],
+        references: [userTable.id],
+    }),
 }));
 
 export const fileTable = pgTable("files", {
     id: uuid("id").primaryKey(),
+    userId: uuid("userId"),
     name: text("name").notNull(),
     type: text("type").notNull(),
     size: integer("size").default(0).notNull(),
@@ -35,3 +36,44 @@ export const fileTable = pgTable("files", {
     updatedAt: timestamp("updatedAt").defaultNow().notNull(),
     createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
+
+export const fileRelations = relations(fileTable, ({ one }) => ({
+    user: one(userTable, {
+        fields: [fileTable.userId],
+        references: [userTable.id],
+    }),
+}));
+
+export const postTable = pgTable("posts", {
+    id: uuid("id").primaryKey(),
+    userId: uuid("userId").notNull(),
+    updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export const postRelations = relations(postTable, ({ one, many }) => ({
+    user: one(userTable, {
+        fields: [postTable.userId],
+        references: [userTable.id],
+    }),
+    files: many(filesToPostsTable),
+}));
+
+export const filesToPostsTable = pgTable("files_to_posts", {
+    id: uuid("id").primaryKey(),
+    fileId: uuid("fileId").notNull(),
+    postId: uuid("postId").notNull(),
+    updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export const filesToPostsRelations = relations(filesToPostsTable, ({ one }) => ({
+    post: one(postTable, {
+        fields: [filesToPostsTable.postId],
+        references: [postTable.id],
+    }),
+    file: one(fileTable, {
+        fields: [filesToPostsTable.fileId],
+        references: [fileTable.id],
+    }),
+}));

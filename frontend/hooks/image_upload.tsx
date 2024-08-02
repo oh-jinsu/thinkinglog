@@ -1,9 +1,11 @@
 "use client";
 
-import { DetailedHTMLProps, InputHTMLAttributes, useRef } from "react";
-import { MdAddPhotoAlternate } from "react-icons/md";
+import { DetailedHTMLProps, InputHTMLAttributes, useContext, useRef } from "react";
+import { EditorContext } from "../components/editor/context";
 
-export default function useUpload(contentRef: React.RefObject<HTMLIFrameElement>) {
+export default function useImageUpload() {
+    const { contentRef } = useContext(EditorContext);
+
     const inputRef = useRef<HTMLInputElement>(null);
 
     const upload = () => {

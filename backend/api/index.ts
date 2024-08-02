@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { PromiseOr } from "@/lib/promise";
+import { PromiseOr } from "@/backend/lib/promise";
 import { APIException } from "./client";
 
 export type APIRequest<RequestBody> = Omit<NextRequest, "json"> & {
@@ -86,6 +86,8 @@ export class API<RequestBody, ResponseBody, Context = void> {
                 });
             } catch (e) {
                 if (e instanceof Error) {
+                    console.error(e);
+
                     return NextResponse.json({ message: e.message }, { status: 500 });
                 }
 
