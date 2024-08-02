@@ -11,7 +11,6 @@ type RequestBody = {
 
 export const signFileAPI = API.post<RequestBody, SignFileResult>("/api/files", async (req) => {
     const accessToken = await getFreshAccessToken(req);
-    console.log(accessToken);
 
     const { name, type, size, metadata } = await req.json();
 

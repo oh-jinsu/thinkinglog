@@ -24,8 +24,6 @@ export default function BottomToolbar({ className, children, ...props }: Props) 
                 return;
             }
 
-            console.log(window.scrollY);
-
             const bottom = 0;
 
             current.style.bottom = `${bottom}px`;
