@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@/frontend/lib/element";
+import { cn } from "@/parent/frontend/lib/element";
 import { DetailedHTMLProps, HTMLAttributes, useEffect, useRef } from "react";
 
 export type Props = DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> & {

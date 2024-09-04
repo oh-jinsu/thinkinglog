@@ -1,5 +1,5 @@
 import { data } from "@/backend/db";
-import { storage } from "@/backend/storage";
+import { storage } from "@/parent/backend/storage";
 import { wysiwygStyle } from "@/frontend/styles";
 import UserLayout from "@/frontend/user_layout";
 import Link from "next/link";

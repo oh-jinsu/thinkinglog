@@ -1,5 +1,5 @@
-import { APIException } from "@/backend/api/client";
-import { signFileAPI } from "@/backend/api/files/sign";
+import { APIException } from "@/parent/backend/api/exception";
+import { signFileAPI } from "@/parent/backend/api/files/sign";
 import { createFileToPostAPI } from "@/backend/api/posts/create_file";
 import toast from "react-hot-toast";
 import { EditorContext } from "../components/editor/context";

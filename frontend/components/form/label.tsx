@@ -1,5 +1,5 @@
 import { labelStyle } from "@/frontend/styles";
-import { cn } from "@/frontend/lib/element";
+import { cn } from "@/parent/frontend/lib/element";
 
 type Props = React.DetailedHTMLProps<React.LabelHTMLAttributes<HTMLLabelElement>, HTMLLabelElement>;
 

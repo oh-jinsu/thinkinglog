@@ -5,7 +5,7 @@ import { useContext } from "react";
 import useImageUpload from "../../hooks/image_upload";
 import { EditorContext } from "./context";
 import { wysiwygStyle } from "@/frontend/styles";
-import { cn } from "@/frontend/lib/element";
+import { cn } from "@/parent/frontend/lib/element";
 
 export default function WysiwygEditor() {
     const { contentRef } = useContext(EditorContext);

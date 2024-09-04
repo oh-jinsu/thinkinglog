@@ -10,6 +10,15 @@ export const userTable = pgTable("users", {
     createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 
+export const userRelations = relations(userTable, ({ one, many }) => ({
+    credentials: one(credentialTable, {
+        fields: [userTable.id],
+        references: [credentialTable.userId],
+    }),
+    files: many(fileTable),
+    posts: many(postTable),
+}));
+
 export const credentialTable = pgTable("credentials", {
     id: text("id").primaryKey(),
     userId: uuid("userId").notNull(),
@@ -27,7 +36,7 @@ export const credentialRelations = relations(credentialTable, ({ one }) => ({
 
 export const fileTable = pgTable("files", {
     id: uuid("id").primaryKey(),
-    userId: uuid("userId"),
+    userId: uuid("userId").references(() => userTable.id),
     name: text("name").notNull(),
     type: text("type").notNull(),
     size: integer("size").default(0).notNull(),
@@ -46,7 +55,9 @@ export const fileRelations = relations(fileTable, ({ one }) => ({
 
 export const postTable = pgTable("posts", {
     id: uuid("id").primaryKey(),
-    userId: uuid("userId").notNull(),
+    userId: uuid("userId")
+        .notNull()
+        .references(() => userTable.id),
     updatedAt: timestamp("updatedAt").defaultNow().notNull(),
     createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
@@ -61,8 +72,12 @@ export const postRelations = relations(postTable, ({ one, many }) => ({
 
 export const filesToPostsTable = pgTable("files_to_posts", {
     id: uuid("id").primaryKey(),
-    fileId: uuid("fileId").notNull(),
-    postId: uuid("postId").notNull(),
+    fileId: uuid("fileId")
+        .notNull()
+        .references(() => fileTable.id),
+    postId: uuid("postId")
+        .notNull()
+        .references(() => postTable.id),
     updatedAt: timestamp("updatedAt").defaultNow().notNull(),
     createdAt: timestamp("createdAt").defaultNow().notNull(),
 });

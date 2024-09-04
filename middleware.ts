@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { withAuth } from "./backend/lib/middleware";
+import { withAuth } from "./parent/backend/middleware";
 
 export const config = {
     matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],

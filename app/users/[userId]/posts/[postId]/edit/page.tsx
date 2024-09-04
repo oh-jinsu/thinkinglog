@@ -1,5 +1,5 @@
 import { data } from "@/backend/db";
-import { storage } from "@/backend/storage";
+import { storage } from "@/parent/backend/storage";
 import EditorProvider from "@/frontend/components/editor/context";
 import WysiwygEditor from "@/frontend/components/editor/editor";
 import SaveButton from "@/frontend/components/editor/save_button";
