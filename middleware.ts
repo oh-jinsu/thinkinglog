@@ -12,7 +12,7 @@ export const middleware = withAuth((req, payload) => {
 
     if (pathname.match(/^\/$/)) {
         if (payload) {
-            return NextResponse.rewrite(new URL(`/users/${payload.userId}`, url.origin));
+            return NextResponse.rewrite(new URL(`/users/${payload.userId}/home`, url.origin));
         }
 
         return;

@@ -3,6 +3,11 @@ import { storage } from "@/parent/backend/storage";
 import UserLayout from "@/frontend/user_layout";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import SubmitButton from "@/parent/frontend/components/submit_button";
+import { cn } from "@/parent/frontend/lib/element";
+import { buttonStyle } from "@/frontend/styles";
+import Image from "next/image";
+import { MdBarChart, MdOutlineBarChart, MdPeopleOutline } from "react-icons/md";
 
 export const dynamic = "force-dynamic";
 
@@ -66,18 +71,75 @@ export default async function Page({ params }: Props) {
         });
 
     return (
-        <UserLayout userId={userId} actions={<Link href={`/users/${user.id}/posts/new`}>새 글 쓰기</Link>}>
+        <UserLayout
+            userId={userId}
+            actions={
+                <div className="flex gap-4">
+                    <form>
+                        <SubmitButton className={cn("px-4 h-[36px]", buttonStyle)}>새 글 쓰기</SubmitButton>
+                    </form>
+                </div>
+            }
+        >
+            <div className="p-4 flex gap-8">
+                <figure className="relative rounded-full overflow-hidden w-[128px] h-[128px]">
+                    <Image src="/images/avatar.jpg" alt="avatar" fill className="object-cover" />
+                </figure>
+                <div className="flex-1 py-1">
+                    <h1 className="text-3xl font-semibold">{user.name}</h1>
+                    <p className="my-2">
+                        Hi! I am a software developer with 4 years of experience working in startups, specializing in
+                        making websites, mobile apps, and games.
+                    </p>
+                    <div className="flex items-center">
+                        <MdPeopleOutline size={18} />
+                        <span className="text-sm">&nbsp;4 팔로워&nbsp;·&nbsp;3 팔로잉</span>
+                    </div>
+                </div>
+            </div>
+            <ul className="flex mt-4">
+                <li className="flex-1">
+                    <Link
+                        href="#"
+                        className="text-center py-2 border-b-2 block w-full h-full hover:bg-gray-100 border-b-gray-700 "
+                    >
+                        게시글
+                    </Link>
+                </li>
+                <li className="flex-1">
+                    <Link
+                        href="#"
+                        className="text-center py-2 border-b-2 block w-full h-full hover:bg-gray-100 border-b-gray-100"
+                    >
+                        카테고리
+                    </Link>
+                </li>
+                <li className="flex-1">
+                    <Link
+                        href="#"
+                        className="text-center py-2 border-b-2 block w-full h-full hover:bg-gray-100 border-b-gray-100"
+                    >
+                        소개
+                    </Link>
+                </li>
+            </ul>
             <ol>
                 {posts.map((post) => (
                     <li key={post.id}>
-                        <Link
-                            className="flex-1 flex justify-between items-center p-4"
-                            href={`/users/${user.id}/posts/${post.id}`}
-                        >
-                            {post.title}
-                            <time className="ml-4 text-sm text-gray-500">
-                                {new Date(post.createdAt).toLocaleDateString()}
-                            </time>
+                        <Link className="flex-1 flex h-[180px] border-b" href={`/users/${user.id}/posts/${post.id}`}>
+                            <div className="flex-1 flex flex-col justify-between my-8 mx-4">
+                                <div>
+                                    <h3 className="text-2xl font-semibold my-2">{post.title}</h3>
+                                    <p className="text-gray-500">이번에는 회고를 빡세게 진행했다.</p>
+                                </div>
+                                <div className="text-gray-500 flex items-center text-sm gap-2">
+                                    <time>{new Date(post.createdAt).toLocaleDateString()}</time>
+                                    <span className="flex items-center">
+                                        <MdOutlineBarChart size={16} />
+                                        &nbsp;300
+                                    </span>
+                                </div>
+                            </div>
                         </Link>
                     </li>
                 ))}

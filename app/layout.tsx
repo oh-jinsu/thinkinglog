@@ -3,7 +3,7 @@ import "./globals.css";
 import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
-    title: "산책자",
+    title: "Thinklog",
 };
 
 export default function RootLayout({

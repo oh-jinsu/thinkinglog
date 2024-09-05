@@ -14,7 +14,9 @@ export default function Home() {
                     </Link>
                 </div>
             </MainHeader>
-            <div className="container mx-auto"></div>
+            <div className="container mx-auto min-h-[600px] flex justify-center items-center">
+                <h1 className="text-3xl font-bold">페이지를 찾지 못했어요.</h1>
+            </div>
             <MainFooter />
         </>
     );

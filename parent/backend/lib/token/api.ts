@@ -1,7 +1,7 @@
-import { AccessToken } from "@/backend/lib/jwt";
-import { refreshAuthUseCase } from "@/backend/usecases/auth/refresh";
 import { decodeJwt } from "jose";
 import { NextRequest } from "next/server";
+import { AccessToken } from "../jwt";
+import { refreshAuthUseCase } from "../../usecases/auth/refresh";
 
 export const getFreshAccessToken = async (req: NextRequest) => {
     const accessToken =

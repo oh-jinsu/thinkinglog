@@ -5,7 +5,7 @@ export const inputBackgroundStyle = "border bg-gray-50 outline-none";
 export const formInputStyle = `rounded text-[16px] w-full h-fit py-2 px-3 ${inputBackgroundStyle}`;
 
 export const baseButtonStyle =
-    "cursor-pointer flex items-center justify-center rounded whitespace-nowrap text-ellipsis overflow-hidden";
+    "cursor-pointer flex items-center justify-center rounded-full whitespace-nowrap text-ellipsis overflow-hidden";
 
 export const buttonStyle = `${baseButtonStyle} bg-primary text-white hover:bg-lighter`;
 
