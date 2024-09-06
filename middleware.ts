@@ -22,15 +22,19 @@ export const middleware = withAuth((req, payload) => {
         return;
     }
 
-    if (!payload) {
-        return NextResponse.redirect(new URL("/auth/signin", url.origin));
+    if (pathname.match(/^\/me/)) {
+        if (payload) {
+            return NextResponse.rewrite(new URL(`/users/${payload.userId}`, url.origin));
+        }
     }
 
     if (pathname.match(/^\/users\//)) {
         const userId = pathname.split("/")[2];
 
-        if (payload.userId !== userId) {
+        if (!payload || payload.userId !== userId) {
             return NextResponse.redirect(new URL(`/auth/signin`, url.origin));
         }
+
+        
     }
 });

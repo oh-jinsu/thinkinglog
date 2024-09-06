@@ -51,7 +51,7 @@ export default function FullscreenContainer({ className, children, onResize, ...
         <div
             ref={containerRef}
             {...props}
-            className={cn("fixed left-0 right-0 mx-auto max-w-[800px] w-full", className)}
+            className={cn("fixed left-0 right-0 container mx-auto", className)}
         >
             {children}
         </div>

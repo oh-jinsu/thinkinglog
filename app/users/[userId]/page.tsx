@@ -7,7 +7,9 @@ import SubmitButton from "@/parent/frontend/components/submit_button";
 import { cn } from "@/parent/frontend/lib/element";
 import { buttonStyle } from "@/frontend/styles";
 import Image from "next/image";
-import { MdBarChart, MdOutlineBarChart, MdPeopleOutline } from "react-icons/md";
+import {  MdOutlineBarChart, MdPeopleOutline } from "react-icons/md";
+import ActionForm from "@/parent/frontend/components/form";
+import { createPostAction } from "@/parent/frontend/actions/posts/create";
 
 export const dynamic = "force-dynamic";
 
@@ -75,13 +77,13 @@ export default async function Page({ params }: Props) {
             userId={userId}
             actions={
                 <div className="flex gap-4">
-                    <form>
+                    <ActionForm action={createPostAction}>
                         <SubmitButton className={cn("px-4 h-[36px]", buttonStyle)}>새 글 쓰기</SubmitButton>
-                    </form>
+                    </ActionForm>
                 </div>
             }
         >
-            <div className="p-4 flex gap-8">
+            <div className="py-8 px-4 flex gap-8">
                 <figure className="relative rounded-full overflow-hidden w-[128px] h-[128px]">
                     <Image src="/images/avatar.jpg" alt="avatar" fill className="object-cover" />
                 </figure>
@@ -101,7 +103,7 @@ export default async function Page({ params }: Props) {
                 <li className="flex-1">
                     <Link
                         href="#"
-                        className="text-center py-2 border-b-2 block w-full h-full hover:bg-gray-100 border-b-gray-700 "
+                        className="text-center py-4 border-b-2 block w-full h-full hover:bg-gray-100 border-b-gray-700 "
                     >
                         게시글
                     </Link>
@@ -109,7 +111,7 @@ export default async function Page({ params }: Props) {
                 <li className="flex-1">
                     <Link
                         href="#"
-                        className="text-center py-2 border-b-2 block w-full h-full hover:bg-gray-100 border-b-gray-100"
+                        className="text-center py-4 border-b-2 block w-full h-full hover:bg-gray-100 border-b-gray-100"
                     >
                         카테고리
                     </Link>
@@ -117,7 +119,7 @@ export default async function Page({ params }: Props) {
                 <li className="flex-1">
                     <Link
                         href="#"
-                        className="text-center py-2 border-b-2 block w-full h-full hover:bg-gray-100 border-b-gray-100"
+                        className="text-center py-4 border-b-2 block w-full h-full hover:bg-gray-100 border-b-gray-100"
                     >
                         소개
                     </Link>

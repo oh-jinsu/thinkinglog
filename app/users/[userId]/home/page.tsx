@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import SubmitButton from "@/parent/frontend/components/submit_button";
 import { cn } from "@/parent/frontend/lib/element";
 import { buttonStyle } from "@/frontend/styles";
+import ActionForm from "@/parent/frontend/components/form";
+import { createPostAction } from "@/parent/frontend/actions/posts/create";
 
 export const dynamic = "force-dynamic";
 
@@ -31,9 +33,9 @@ export default async function Page({ params }: Props) {
             userId={userId}
             actions={
                 <div className="flex gap-4">
-                    <form>
+                    <ActionForm action={createPostAction}>
                         <SubmitButton className={cn("px-4 h-[36px]", buttonStyle)}>새 글 쓰기</SubmitButton>
-                    </form>
+                    </ActionForm>
                 </div>
             }
         ></UserLayout>

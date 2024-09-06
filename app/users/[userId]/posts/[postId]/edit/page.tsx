@@ -1,12 +1,13 @@
 import { data } from "@/backend/db";
 import { storage } from "@/parent/backend/storage";
 import EditorProvider from "@/frontend/components/editor/context";
-import WysiwygEditor from "@/frontend/components/editor/editor";
+import Editor from "@/frontend/components/editor/editor";
 import SaveButton from "@/frontend/components/editor/save_button";
 import FullscreenContainer from "@/frontend/components/fullscreen_container";
 import UserHeader from "@/frontend/user_header";
 import { notFound } from "next/navigation";
 import { MdLock } from "react-icons/md";
+import MainHeader from "@/frontend/components/main/header";
 
 export const dynamic = "force-dynamic";
 
@@ -63,18 +64,12 @@ export default async function Page({ params }: Props) {
     return (
         <EditorProvider html={html}>
             <FullscreenContainer className="flex flex-col">
-                <UserHeader userId={user.id}>
+                <MainHeader>
                     <div className="flex gap-2">
                         <SaveButton postId={postId} />
-                        <button
-                            type="button"
-                            className="h-full aspect-square flex justify-center items-center rounded text-slate-700 hover:bg-slate-100"
-                        >
-                            <MdLock size={24} />
-                        </button>
                     </div>
-                </UserHeader>
-                <WysiwygEditor />
+                </MainHeader>
+                <Editor />
             </FullscreenContainer>
         </EditorProvider>
     );

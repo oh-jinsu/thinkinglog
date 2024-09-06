@@ -1,10 +1,11 @@
 import { data } from "@/backend/db";
 import { storage } from "@/parent/backend/storage";
-import { wysiwygStyle } from "@/frontend/styles";
+import { buttonStyle, editorStyle } from "@/frontend/styles";
 import UserLayout from "@/frontend/user_layout";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MdEdit } from "react-icons/md";
+import { cn } from "@/parent/frontend/lib/element";
 
 type Props = {
     params: {
@@ -60,13 +61,13 @@ export default async function Page({ params }: Props) {
         <UserLayout
             userId={user.id}
             actions={
-                <Link href={`/users/${user.id}/posts/${post.id}/edit`}>
-                    <MdEdit size={20} />
+                <Link href={`/users/${user.id}/posts/${post.id}/edit`} className={cn("px-4 h-[36px]", buttonStyle)}>
+                    수정하기
                 </Link>
             }
         >
             <div
-                className={wysiwygStyle}
+                className={editorStyle}
                 dangerouslySetInnerHTML={{
                     __html: html,
                 }}

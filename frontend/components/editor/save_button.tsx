@@ -1,7 +1,8 @@
 "use client";
 
 import { useEditorSave } from "@/frontend/hooks/save";
-import { MdSave } from "react-icons/md";
+import { buttonStyle } from "@/frontend/styles";
+import { cn } from "@/parent/frontend/lib/element";
 
 export default function SaveButton({ postId }: { postId: string }) {
     const save = useEditorSave(postId);
@@ -9,10 +10,10 @@ export default function SaveButton({ postId }: { postId: string }) {
     return (
         <button
             type="button"
-            className="h-full aspect-square flex justify-center items-center rounded text-slate-700 hover:bg-slate-100"
+            className={cn("px-4 h-[36px]", buttonStyle)}
             onClick={save}
         >
-            <MdSave size={24} />
+            저장하기
         </button>
     );
 }
