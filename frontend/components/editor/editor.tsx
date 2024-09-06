@@ -1,7 +1,15 @@
 "use client";
 
-import { MdAddPhotoAlternate } from "react-icons/md";
-import { ButtonHTMLAttributes, DetailedHTMLProps, ReactNode, useContext } from "react";
+import {
+    MdAddPhotoAlternate,
+    MdCode,
+    MdFormatBold,
+    MdFormatItalic,
+    MdFormatQuote,
+    MdFormatStrikethrough,
+    MdLink,
+} from "react-icons/md";
+import { ButtonHTMLAttributes, DetailedHTMLProps, useContext } from "react";
 import useImageUpload from "../../hooks/image_upload";
 import { EditorContext } from "./context";
 import { editorStyle } from "@/frontend/styles";
@@ -25,19 +33,45 @@ export default function Editor() {
         );
     }
     return (
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col container mx-auto">
             <input type="title" placeholder="제목을 입력하세요" className="text-3xl w-full h-[56px] p-4 outline-none" />
-            <div className="w-full h-[56px] flex p-1 bg-white my-4">
-                <ToolButton>H1</ToolButton>
-                <ToolButton>H2</ToolButton>
-                <ToolButton>H3</ToolButton>
-                <ToolButton>H4</ToolButton>
+            <div className="w-full h-[56px] flex my-4 items-center text-gray-200 gap-2 overflow-x-auto">
+                <div className="flex">
+                    <ToolButton>H1</ToolButton>
+                    <ToolButton>H2</ToolButton>
+                    <ToolButton>H3</ToolButton>
+                    <ToolButton>H4</ToolButton>
+                </div>
+                |
+                <div className="flex">
                 <ToolButton>
-                    <MdAddPhotoAlternate size={28} onClick={upload} />
-                </ToolButton>
-                <Input />
+                        <MdAddPhotoAlternate size={24} onClick={upload} />
+                        <Input />
+                    </ToolButton>
+                    <ToolButton>
+                        <MdLink size={24} />
+                    </ToolButton>
+                    <ToolButton>
+                        <MdFormatQuote size={24} />
+                    </ToolButton>
+                    <ToolButton>
+                        <MdCode size={24} />
+                    </ToolButton>
+                </div>
+                |
+                <div className="flex">
+                    <ToolButton>
+                        <MdFormatBold size={24} />
+                    </ToolButton>
+                    <ToolButton>
+                        <MdFormatItalic size={24} />
+                    </ToolButton>
+                    <ToolButton>
+                        <MdFormatStrikethrough size={24} />
+                    </ToolButton>
+                </div>
             </div>
-            <div id="content" className={cn(editorStyle, "overflow-auto")} contentEditable ref={contentRef} />
+            <iframe id="content" className={cn(editorStyle, "overflow-auto")} ref={contentRef} />
         </div>
     );
 }
