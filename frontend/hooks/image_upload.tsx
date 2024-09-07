@@ -4,7 +4,7 @@ import { DetailedHTMLProps, InputHTMLAttributes, useContext, useRef } from "reac
 import { EditorContext } from "../components/editor/context";
 
 export default function useImageUpload() {
-    const { contentRef } = useContext(EditorContext);
+    const { iframeRef: contentRef } = useContext(EditorContext);
 
     const inputRef = useRef<HTMLInputElement>(null);
 

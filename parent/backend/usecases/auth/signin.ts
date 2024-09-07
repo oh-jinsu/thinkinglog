@@ -41,7 +41,7 @@ export const signInUseCase: UseCase<Params, Result> = async ({ id, password }) =
 
     const refreshToken = await new RefreshToken().sign({ userId: user.id });
 
-    const accessToken = await new AccessToken().sign({ userId: user.id });
+    const accessToken = await new AccessToken().sign({ userId: user.id, slug: user.slug });
 
     await data
         .update(userTable)

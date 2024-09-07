@@ -34,11 +34,15 @@ export const getFreshPayloadFromCookies = async () => {
         return;
     }
 
-    const { userId } = decodeJwt(accessToken);
+    const { userId, slug } = decodeJwt(accessToken);
 
     if (typeof userId !== "string") {
         return;
     }
 
-    return { userId };
+    if (typeof slug !== "string") {
+        return;
+    }
+
+    return { userId, slug };
 };

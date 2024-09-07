@@ -1,12 +1,11 @@
 import MainHeader from "./components/main/header";
 
 type Props = {
-    userId?: string;
     actions?: React.ReactNode;
     children?: React.ReactNode;
 };
 
-export default async function UserLayout({ userId, actions, children }: Props) {
+export default async function UserLayout({ actions, children }: Props) {
     return (
         <>
             <MainHeader>{actions}</MainHeader>

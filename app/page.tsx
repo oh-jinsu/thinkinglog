@@ -1,21 +1,36 @@
-import MainFooter from "@/frontend/components/main/footer";
-import MainHeader from "@/frontend/components/main/header";
+import { credentialTable, data, userTable } from "@/backend/db";
 import { buttonStyle } from "@/frontend/styles";
+import UserLayout from "@/frontend/user_layout";
 import { cn } from "@/parent/frontend/lib/element";
+import { hashSync } from "bcryptjs";
 import Link from "next/link";
+import { v4 } from "uuid";
 
-export default function Home() {
+export default async function Home() {
+    // const [user] = await data
+    //     .insert(userTable)
+    //     .values({
+    //         id: v4(),
+    //         slug: "오진수",
+    //         name: "오진수",
+    //     })
+    //     .returning();
+
+    // const credential = await data.insert(credentialTable).values({
+    //     userId: user.id,
+    //     id: "오진수",
+    //     password: hashSync("1234", 10),
+    // });
+
     return (
-        <>
-            <MainHeader>
-                <div className="flex gap-4">
-                    <Link href="/auth/signin" className={cn("px-4 h-[36px]", buttonStyle)}>
-                        로그인
-                    </Link>
-                </div>
-            </MainHeader>
+        <UserLayout
+            actions={
+                <Link href="/auth/signin" className={cn("px-4 h-[36px]", buttonStyle)}>
+                    로그인
+                </Link>
+            }
+        >
             <div className="container mx-auto"></div>
-            <MainFooter />
-        </>
+        </UserLayout>
     );
 }

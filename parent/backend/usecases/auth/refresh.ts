@@ -43,7 +43,7 @@ export const refreshAuthUseCase: UseCase<RefreshAuthParams, RefreshAuthResult> =
         throw Error("토큰이 올바르지 않아요.");
     }
 
-    const accessToken = await new AccessToken().sign({ userId: user.id });
+    const accessToken = await new AccessToken().sign({ userId: user.id, slug: user.slug });
 
     return {
         accessToken,

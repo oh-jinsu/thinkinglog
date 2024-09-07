@@ -5,6 +5,8 @@ import { pgTable } from "drizzle-orm/pg-core";
 export const userTable = pgTable("users", {
     id: uuid("id").primaryKey(),
     name: text("name").notNull(),
+    slug: text("slug").notNull(),
+    logoId: uuid("logoId"),
     refreshToken: text("refreshToken"),
     updatedAt: timestamp("updatedAt").defaultNow().notNull(),
     createdAt: timestamp("createdAt").defaultNow().notNull(),
@@ -15,13 +17,20 @@ export const userRelations = relations(userTable, ({ one, many }) => ({
         fields: [userTable.id],
         references: [credentialTable.userId],
     }),
+    logo: one(fileTable, {
+        fields: [userTable.logoId],
+        references: [fileTable.id],
+    }),
     files: many(fileTable),
     posts: many(postTable),
+    categories: many(categoryTable),
 }));
 
 export const credentialTable = pgTable("credentials", {
     id: text("id").primaryKey(),
-    userId: uuid("userId").notNull(),
+    userId: uuid("userId")
+        .notNull()
+        .references(() => userTable.id),
     password: text("password").notNull(),
     updatedAt: timestamp("updatedAt").defaultNow().notNull(),
     createdAt: timestamp("createdAt").defaultNow().notNull(),
@@ -53,42 +62,47 @@ export const fileRelations = relations(fileTable, ({ one }) => ({
     }),
 }));
 
-export const postTable = pgTable("posts", {
+export const categoryTable = pgTable("categories", {
     id: uuid("id").primaryKey(),
     userId: uuid("userId")
-        .notNull()
-        .references(() => userTable.id),
+        .references(() => userTable.id)
+        .notNull(),
+    name: text("name").notNull(),
+    slug: text("slug").notNull(),
     updatedAt: timestamp("updatedAt").defaultNow().notNull(),
     createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 
-export const postRelations = relations(postTable, ({ one, many }) => ({
+export const categoryRelations = relations(categoryTable, ({ one, many }) => ({
+    user: one(userTable, {
+        fields: [categoryTable.userId],
+        references: [userTable.id],
+    }),
+    posts: many(postTable),
+}));
+
+export const postTable = pgTable("posts", {
+    id: uuid("id").primaryKey(),
+    categoryId: uuid("categoryId").references(() => categoryTable.id),
+    userId: uuid("userId")
+        .notNull()
+        .references(() => userTable.id),
+    title: text("title").notNull(),
+    content: text("content").notNull(),
+    slug: text("slug").notNull(),
+    tags: text("tags"),
+    views: integer("views").default(0).notNull(),
+    updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export const postRelations = relations(postTable, ({ one }) => ({
     user: one(userTable, {
         fields: [postTable.userId],
         references: [userTable.id],
     }),
-    files: many(filesToPostsTable),
-}));
-
-export const filesToPostsTable = pgTable("files_to_posts", {
-    id: uuid("id").primaryKey(),
-    fileId: uuid("fileId")
-        .notNull()
-        .references(() => fileTable.id),
-    postId: uuid("postId")
-        .notNull()
-        .references(() => postTable.id),
-    updatedAt: timestamp("updatedAt").defaultNow().notNull(),
-    createdAt: timestamp("createdAt").defaultNow().notNull(),
-});
-
-export const filesToPostsRelations = relations(filesToPostsTable, ({ one }) => ({
-    post: one(postTable, {
-        fields: [filesToPostsTable.postId],
-        references: [postTable.id],
-    }),
-    file: one(fileTable, {
-        fields: [filesToPostsTable.fileId],
-        references: [fileTable.id],
+    category: one(categoryTable, {
+        fields: [postTable.categoryId],
+        references: [categoryTable.id],
     }),
 }));

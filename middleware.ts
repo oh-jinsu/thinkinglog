@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { withAuth } from "./parent/backend/middleware";
 
 export const config = {
-    matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+    matcher: ["/((?!api|_next/static|_next/image|favicon.ico|images|editor.css).*)"],
 };
 
 export const middleware = withAuth((req, payload) => {
@@ -22,10 +22,14 @@ export const middleware = withAuth((req, payload) => {
         return;
     }
 
-    if (pathname.match(/^\/me/)) {
+    if (pathname.match(/^\/@/)) {
         if (payload) {
-            return NextResponse.rewrite(new URL(`/users/${payload.userId}`, url.origin));
+            const rewriteUrl = new URL(url.toString().replace(/\/@/, "/users/"));
+
+            return NextResponse.rewrite(rewriteUrl);
         }
+
+        return NextResponse.redirect(new URL(`/auth/signin`, url.origin));
     }
 
     if (pathname.match(/^\/users\//)) {
@@ -34,7 +38,5 @@ export const middleware = withAuth((req, payload) => {
         if (!payload || payload.userId !== userId) {
             return NextResponse.redirect(new URL(`/auth/signin`, url.origin));
         }
-
-        
     }
 });

@@ -19,5 +19,3 @@ export const bigButtonStyle = `w-[200px] h-[50px] text-xl ${buttonStyle}`;
 
 export const simpleButtonStyle =
     "text-gray-700 hover:bg-gray-200 active:bg-gray-200 cursor-pointer flex justify-center items-center relative rounded outline-none";
-
-export const editorStyle = "flex-1 p-4 pb-10 outline-none";

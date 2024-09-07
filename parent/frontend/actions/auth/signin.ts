@@ -44,5 +44,7 @@ export const signInServerAction = ServerAction(async (formData: FormData) => {
         }),
     );
 
-    redirect(redirectUrl || "/me");
+    const slug = decodeJwt(accessToken).slug as string;
+
+    redirect(redirectUrl || `/@${encodeURIComponent(slug)}`);
 });
