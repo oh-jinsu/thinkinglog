@@ -1,21 +1,23 @@
-import { data } from "@/backend/db";
+import {  fileTable, userTable } from "@/backend/db";
 import Image from "next/image";
 import Link from "next/link";
 import { cdn } from "../cdn";
-import { findUserBySlug } from "../cache/user";
 import { MdPerson } from "react-icons/md";
+import { cn } from "@/parent/frontend/lib/element";
 
 type Props = {
-    slug: string;
+    user: typeof userTable.$inferSelect & {
+        logo: typeof fileTable.$inferSelect | null
+    };
+    className?: string;
 };
 
-export default async function Avatar({ slug }: Props) {
-    const user = await findUserBySlug(slug);
-
+export default async function Avatar({ user, className }: Props) {
+  
     const src = user.logo ? cdn(user.logo.key) : "/images/avatar.png";
 
     return (
-        <Link href={`/@${user.slug}`} className="w-[40px] h-[40px] overflow-hidden rounded-full">
+        <Link href={`/@${user.slug}`} className={cn(className, "overflow-hidden rounded-full")}>
             {user.logo ? (
                 <Image src={src} fill alt="avatar" />
             ) : (

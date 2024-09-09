@@ -1,38 +1,52 @@
 "use client";
-import { rehype } from "rehype";
-import rehypeHightlight from "rehype-highlight";
+
 import { MdCode } from "react-icons/md";
 import EditorToolButton from "../tool_button";
-import { FormEventHandler, MouseEventHandler, useState } from "react";
+import { FormEventHandler, MouseEventHandler, useRef, useState } from "react";
 import Modal from "../../modal";
 import SubmitButton from "@/parent/frontend/components/submit_button";
 import { cn } from "@/parent/frontend/lib/element";
 import { primaryButtonStyle } from "@/frontend/styles";
-import rehypeStringify from "rehype-stringify";
-import { useEditor } from "../context";
+import { useEditor } from "../provider";
 import { CodeTool } from "./code";
 
 export default function CodeToolButton() {
-    const { iframeRef } = useEditor();
+    const { editorRef } = useEditor();
+
+    const rangeRef = useRef<Range | null>(null);
 
     const [open, setOpen] = useState(false);
 
     const onClick: MouseEventHandler = () => {
+             
+        const selection = document.getSelection();
+
+        if (!selection || selection.rangeCount === 0) {
+            return;
+        }
+
+        const range = selection.getRangeAt(0);
+
+        rangeRef.current = range;
+
         setOpen(true);
+        
     };
 
     const onSubmit: FormEventHandler<HTMLFormElement> = (e) => {
         e.preventDefault();
 
+        
         const form = e.currentTarget;
 
         const code = form.code.value as string;
 
         setOpen(false);
 
-        const tool = new CodeTool(iframeRef);
+        const tool = new CodeTool(editorRef);
 
-        tool.run({ code });
+   
+        tool.run({range: rangeRef.current!, code });
     };
 
     return (

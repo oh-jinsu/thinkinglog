@@ -1,10 +1,10 @@
 "use client";
 
-import { DetailedHTMLProps, InputHTMLAttributes, useContext, useRef } from "react";
-import { EditorContext } from "../components/editor/context";
+import { DetailedHTMLProps, InputHTMLAttributes, useRef } from "react";
+import { useEditor } from "../components/editor/provider";
 
 export default function useImageUpload() {
-    const { iframeRef, withDocument } = useContext(EditorContext);
+    const { editorRef } = useEditor();
 
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -20,62 +20,67 @@ export default function useImageUpload() {
         input.click();
     };
 
-    const onInputChange = () => {
-        withDocument(async (doc) => {
-            const input = inputRef.current;
+    const onInputChange = async () => {
+        const editor = editorRef.current;
 
-            if (!input || !input.files) {
-                return;
-            }
+        if (!editor) {
+            return;
+        }
 
-            for await (const file of Array.from(input.files)) {
-                await new Promise<void>((resolve, reject) => {
-                    const reader = new FileReader();
+        const input = inputRef.current;
 
-                    reader.onload = () => {
-                        const img = doc.createElement("img");
+        if (!input || !input.files) {
+            return;
+        }
 
-                        img.src = reader.result as string;
+        for await (const file of Array.from(input.files)) {
+            await new Promise<void>((resolve, reject) => {
+                const reader = new FileReader();
 
-                        const figure = doc.createElement("figure");
+                reader.onload = () => {
+                    const img = document.createElement("img");
 
-                        figure.appendChild(img);
+                    img.src = reader.result as string;
 
-                        {
-                            const selection = doc.getSelection();
+                    const figure = document.createElement("figure");
 
-                            if (selection && selection.rangeCount > 0) {
-                                const range = selection.getRangeAt(0);
+                    figure.appendChild(img);
 
-                                range.insertNode(figure);
-                            } else {
-                                doc.body.appendChild(figure);
-                            }
+                    {
+                        const selection = document.getSelection();
+
+                        if (selection && selection.rangeCount > 0) {
+                            const range = selection.getRangeAt(0);
+
+                            range.insertNode(figure);
+                        } else {
+                            editor.appendChild(figure);
                         }
+                    }
 
-                        doc.body.focus();
+                    editor.focus();
 
-                        const selection = doc.getSelection();
+                    const selection = document.getSelection();
 
-                        if (!selection) {
-                            return reject();
-                        }
+                    if (!selection) {
+                        return reject();
+                    }
 
-                        const range = doc.createRange();
+                    const range = document.createRange();
 
-                        range.selectNodeContents(figure);
+                    range.selectNodeContents(figure);
 
-                        selection.removeAllRanges();
+                    selection.removeAllRanges();
 
-                        selection.addRange(range);
+                    selection.addRange(range);
 
-                        resolve();
-                    };
+                    resolve();
+                };
 
-                    reader.readAsDataURL(file);
-                });
-            }
-        });
+                reader.readAsDataURL(file);
+            });
+        }
+
     };
 
     type Props = DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;

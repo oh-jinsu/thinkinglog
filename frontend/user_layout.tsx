@@ -9,7 +9,7 @@ export default async function UserLayout({ actions, children }: Props) {
     return (
         <>
             <MainHeader>{actions}</MainHeader>
-            <main className="max-w-[800px] w-full mx-auto">{children}</main>
+            <main className="max-w-[932px] w-full mx-auto">{children}</main>
         </>
     );
 }

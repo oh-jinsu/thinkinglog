@@ -1,9 +1,9 @@
-import MyHead from "@/frontend/components/head";
 import type { Metadata } from "next";
 import { Toaster } from "react-hot-toast";
+import "./globals.css";
 
 export const metadata: Metadata = {
-    title: "Thinklog",
+    title: "작업로그",
 };
 
 export default function RootLayout({
@@ -13,7 +13,6 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="ko">
-            <MyHead />
             <body>
                 {children}
                 <div id="modal-root" />

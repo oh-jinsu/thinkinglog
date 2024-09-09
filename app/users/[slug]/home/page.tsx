@@ -1,13 +1,9 @@
 import UserLayout from "@/frontend/user_layout";
-import SubmitButton from "@/parent/frontend/components/submit_button";
 import { cn } from "@/parent/frontend/lib/element";
 import { roundedPrimaryButtonStyle } from "@/frontend/styles";
-import ActionForm from "@/parent/frontend/components/form";
 import Avatar from "@/frontend/components/avatar";
-import { savePostAction } from "@/parent/frontend/actions/posts/save";
 import Link from "next/link";
-
-export const dynamic = "force-dynamic";
+import { findUserBySlug } from "@/frontend/cache/user";
 
 type Props = {
     params: {
@@ -16,6 +12,8 @@ type Props = {
 };
 
 export default async function Page({ params }: Props) {
+    const user = await findUserBySlug(params.slug);
+
     return (
         <UserLayout
             actions={
@@ -23,7 +21,7 @@ export default async function Page({ params }: Props) {
                     <Link href={`/@${params.slug}/new`} className={cn("px-4 h-[36px]", roundedPrimaryButtonStyle)}>
                         새 글 쓰기
                     </Link>
-                    <Avatar slug={params.slug} />
+                    <Avatar user={user} className="w-10 h-10"/>
                 </div>
             }
         ></UserLayout>

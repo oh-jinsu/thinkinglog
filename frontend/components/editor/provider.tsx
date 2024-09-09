@@ -5,9 +5,8 @@ import { createContext, useContext, useEffect, useRef } from "react";
 import { QuoteTool } from "./tools/quote";
 
 export type EditorContextProps = {
-    iframeRef: React.MutableRefObject<HTMLIFrameElement | null>;
+    editorRef: React.MutableRefObject<HTMLDivElement | null>;
     post?: typeof postTable.$inferSelect;
-    withDocument: (callback: (doc: Document) => void) => void;
     wrapContent: (tag: keyof HTMLElementTagNameMap) => void;
     wrapLink: () => void;
     formatHeading: (heading: "h1" | "h2" | "h3" | "h4") => void;
@@ -16,7 +15,7 @@ export type EditorContextProps = {
     appendDivider: () => void;
 };
 
-export const EditorContext = createContext<EditorContextProps>({} as any);
+const EditorContext = createContext<EditorContextProps>({} as any);
 
 export const useEditor = () => useContext(EditorContext);
 
@@ -26,69 +25,58 @@ type Props = {
 };
 
 export default function EditorProvider({ children, post }: Props) {
-    const iframeRef = useRef<HTMLIFrameElement>(null);
+    const editorRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        const doc = iframeRef.current?.contentDocument;
+        const doc = editorRef.current;
 
         if (!doc) {
             return;
         }
 
-        const styleSheet = doc.createElement("link");
+        doc.contentEditable = "true";
 
-        styleSheet.rel = "stylesheet";
-
-        styleSheet.href = "/editor.css";
-
-        doc.head.appendChild(styleSheet);
-
-        doc.designMode = "on";
-
-        doc.body.innerHTML = post?.content || "";
-    }, [iframeRef, post]);
+        doc.innerHTML = post?.content || "";
+    }, [editorRef, post]);
 
     useEffect(() => {
-        const iframe = iframeRef.current;
+        const editor = editorRef.current;
 
-        if (!iframe) {
+        if (!editor) {
             return;
         }
 
         const append = () => {
-            const doc = iframe.contentDocument;
-
-            if (!doc) {
-                return;
-            }
-
-            const last = doc.body.lastElementChild;
+            const last = editor.lastElementChild;
 
             if (!last || !last.querySelector("br")) {
-                const div = doc.createElement("div");
+                const div = document.createElement("div");
 
-                div.appendChild(doc.createElement("br"));
+                div.appendChild(document.createElement("br"));
 
-                doc.body.appendChild(div);
-                const selection = doc.getSelection();
+                editor.appendChild(div);
+
+                const selection = document.getSelection();
 
                 if (!selection) {
                     return;
                 }
 
-                const range = doc.createRange();
+                const range = document.createRange();
 
                 range.selectNodeContents(div);
 
+                range.collapse();
+                
                 selection.removeAllRanges();
 
                 selection.addRange(range);
 
-                doc.body.focus();
+                editor.focus();
             }
         };
 
-        iframe.addEventListener("click", append);
+        editor.addEventListener("click", append);
 
         const onKeydown = (event: KeyboardEvent) => {
             if (event.key === "ArrowDown") {
@@ -96,33 +84,24 @@ export default function EditorProvider({ children, post }: Props) {
             }
         };
 
-        iframe.addEventListener("keydown", onKeydown);
+        editor.addEventListener("keydown", onKeydown);
 
         return () => {
-            iframe.removeEventListener("click", append);
+            editor.removeEventListener("click", append);
 
-            iframe.removeEventListener("keydown", onKeydown);
+            editor.removeEventListener("keydown", onKeydown);
         };
     }, []);
-    const withDocument = (callback: (doc: Document) => void) => {
-        const iframe = iframeRef.current;
-
-        if (!iframe) {
-            return;
-        }
-
-        const doc = iframe.contentDocument;
-
-        if (!doc) {
-            return;
-        }
-
-        callback(doc);
-    };
+    
 
     const wrapContent = (tag: keyof HTMLElementTagNameMap, replace: (keyof HTMLElementTagNameMap)[] = []) => {
-        withDocument((doc) => {
-            const selection = doc.getSelection();
+        const editor = editorRef.current;
+
+        if (!editor) {
+            return;
+        }
+
+            const selection = document.getSelection();
 
             if (!selection || selection.rangeCount === 0) {
                 return;
@@ -139,7 +118,7 @@ export default function EditorProvider({ children, post }: Props) {
                     if (element.tagName.toLowerCase() === tag) {
                         const inner = range.cloneContents();
 
-                        const node = doc.createTextNode(inner.textContent || "");
+                        const node = document.createTextNode(inner.textContent || "");
 
                         element.replaceWith(node);
 
@@ -149,7 +128,7 @@ export default function EditorProvider({ children, post }: Props) {
                     if (replace.includes(element.tagName.toLowerCase() as keyof HTMLElementTagNameMap)) {
                         const inner = range.cloneContents();
 
-                        const wrapper = doc.createElement(tag);
+                        const wrapper = document.createElement(tag);
 
                         wrapper.appendChild(inner);
 
@@ -161,9 +140,9 @@ export default function EditorProvider({ children, post }: Props) {
 
                 const inner = range.cloneContents();
 
-                const wrapper = doc.createElement(tag);
+                const wrapper = document.createElement(tag);
 
-                const node = doc.createTextNode(inner.textContent || "");
+                const node = document.createTextNode(inner.textContent || "");
 
                 wrapper.appendChild(node);
 
@@ -177,7 +156,7 @@ export default function EditorProvider({ children, post }: Props) {
             const node = wrapElement();
 
             focus(node);
-        });
+      
     };
 
     const formatHeading = (heading: "h1" | "h2" | "h3" | "h4") => {
@@ -189,8 +168,12 @@ export default function EditorProvider({ children, post }: Props) {
     };
 
     const formatTextAlign = (align: "left" | "center" | "right") => {
-        withDocument((doc) => {
-            const selection = doc.getSelection();
+        const editor = editorRef.current;
+
+        if (!editor) {
+            return;
+        } 
+            const selection = document.getSelection();
 
             if (!selection || selection.rangeCount === 0) {
                 return;
@@ -217,7 +200,7 @@ export default function EditorProvider({ children, post }: Props) {
                     return parent;
                 }
 
-                const wrapper = doc.createElement("div");
+                const wrapper = document.createElement("div");
 
                 wrapper.style.textAlign = align;
 
@@ -229,12 +212,17 @@ export default function EditorProvider({ children, post }: Props) {
             const node = alignElement();
 
             focus(node);
-        });
+   
     };
 
     const appendDivider = () => {
-        withDocument((doc) => {
-            const selection = doc.getSelection();
+        const editor = editorRef.current;
+
+        if (!editor) {
+            return;
+        }
+
+            const selection = document.getSelection();
 
             if (!selection) {
                 return;
@@ -242,40 +230,49 @@ export default function EditorProvider({ children, post }: Props) {
 
             const range = selection.getRangeAt(0);
 
-            const divider = doc.createElement("hr");
+            const divider = document.createElement("hr");
 
-            const br = doc.createElement("br");
+            const br = document.createElement("br");
 
             range.insertNode(br);
 
             range.insertNode(divider);
 
             focus(br);
-        });
+        
     };
 
     const focus = (node: Node) => {
-        withDocument((doc) => {
-            const selection = doc.getSelection();
+        const editor = editorRef.current;
+
+        if (!editor) {
+            return;
+        }
+
+            const selection = document.getSelection();
 
             if (!selection) {
                 return;
             }
             selection.removeAllRanges();
 
-            const newRange = doc.createRange();
+            const newRange = document.createRange();
 
             newRange.selectNodeContents(node);
 
             selection.addRange(newRange);
 
-            doc.body.focus();
-        });
+            editor.focus();
+       
     };
 
     const wrapLink = () => {
-        withDocument((doc) => {
-            const selection = doc.getSelection();
+        const editor = editorRef.current;
+
+        if (!editor) {
+            return;
+        }
+            const selection = document.getSelection();
 
             if (!selection || selection.rangeCount === 0) {
                 return;
@@ -298,7 +295,7 @@ export default function EditorProvider({ children, post }: Props) {
                     if (element.tagName.toLowerCase() === "a") {
                         const inner = range.cloneContents();
 
-                        const node = doc.createTextNode(inner.textContent || "");
+                        const node = document.createTextNode(inner.textContent || "");
 
                         element.replaceWith(node);
 
@@ -308,9 +305,9 @@ export default function EditorProvider({ children, post }: Props) {
 
                 const inner = range.cloneContents();
 
-                const node = doc.createTextNode(inner.textContent || "");
+                const node = document.createTextNode(inner.textContent || "");
 
-                const wrapper = doc.createElement("a");
+                const wrapper = document.createElement("a");
 
                 wrapper.appendChild(node);
 
@@ -330,13 +327,12 @@ export default function EditorProvider({ children, post }: Props) {
             }
 
             focus(node);
-        });
+    
     };
 
     const value = {
-        iframeRef,
+        editorRef: editorRef,
         post,
-        withDocument,
         wrapContent,
         wrapLink,
         formatHeading,
@@ -344,7 +340,7 @@ export default function EditorProvider({ children, post }: Props) {
         formatTextAlign,
         appendDivider,
         tools: {
-            quote: new QuoteTool(iframeRef),
+            quote: new QuoteTool(editorRef),
         },
     };
 

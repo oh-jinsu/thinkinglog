@@ -24,9 +24,6 @@ export default function Layout({
 }>) {
     return (
         <>
-            <head>
-                <title>TTT</title>
-            </head>
             {children}
         </>
     );

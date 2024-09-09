@@ -4,17 +4,18 @@ import rehypePrism from "rehype-prism-plus";
 import rehypeStringify from "rehype-stringify";
 
 type Params = {
+    range: Range;
     code: string;
 };
 
 export class CodeTool extends Tool<Params> {
-    override run({ code }: Params): void {
-        const selection = this.doc.getSelection();
+    override run({ range, code }: Params): void {
+        const editor = this.editorRef.current;
 
-        if (!selection || selection.rangeCount === 0) {
+        if (!editor) {
             return;
         }
-
+        
         const language = "javascript";
 
         const wrappedCode = `<pre><code class="language-${language}">${code}</code></pre>`;
@@ -28,8 +29,6 @@ export class CodeTool extends Tool<Params> {
         const pre = doc.querySelector("pre")!;
 
         pre.spellcheck = false;
-
-        const range = selection.getRangeAt(0);
 
         const container = range.commonAncestorContainer;
 

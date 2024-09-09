@@ -2,7 +2,7 @@
 
 import useImageUpload from "@/frontend/hooks/image_upload";
 import EditorToolButton from "./tool_button";
-import { useEditor } from "./context";
+import { useEditor } from "./provider";
 import {
     MdFormatAlignCenter,
     MdFormatAlignLeft,
@@ -15,11 +15,11 @@ import {
     MdLink,
     MdPhoto,
 } from "react-icons/md";
-import CodeToolButton from "./tools/code.button";
+import CodeToolButton from "./tools/code_button";
 import { QuoteTool } from "./tools/quote";
 
 export default function EditorToolbar() {
-    const { iframeRef, formatHeading, formatStyle, formatTextAlign, appendDivider, wrapLink } = useEditor();
+    const { editorRef, formatHeading, formatStyle, formatTextAlign, appendDivider, wrapLink } = useEditor();
 
     const [upload, Input] = useImageUpload();
 
@@ -46,7 +46,7 @@ export default function EditorToolbar() {
             <EditorToolButton onClick={() => wrapLink()}>
                 <MdLink size={24} />
             </EditorToolButton>
-            <EditorToolButton onClick={() => new QuoteTool(iframeRef).run()}>
+            <EditorToolButton onClick={() => new QuoteTool(editorRef).run()}>
                 <MdFormatQuote size={24} />
             </EditorToolButton>
             <CodeToolButton />

@@ -7,10 +7,10 @@ type Props = {
 
 export default function MainHeader({ children }: Props) {
     return (
-        <header className="container mx-auto h-[55px] flex justify-between items-center px-4">
+        <header className="sticky top-0 max-w-[1600px] w-full mx-auto h-[55px] flex justify-between items-center px-4">
             <div className="flex items-center gap-1">
                 <Link href={"/"} className="text-xl md:text-xl font-semibold text-black">
-                    Thinklog
+                    작업로그
                 </Link>
             </div>
             {children}

@@ -2,7 +2,7 @@ import { Tool } from "./tool";
 
 export class QuoteTool extends Tool<void> {
     override run(_: void): void {
-        const selection = this.doc.getSelection();
+        const selection = document.getSelection();
 
         if (!selection || selection.rangeCount === 0) {
             return;
@@ -21,9 +21,9 @@ export class QuoteTool extends Tool<void> {
 
             const inner = range.cloneContents();
 
-            const node = this.doc.createTextNode(inner.textContent || "");
+            const node = document.createTextNode(inner.textContent || "");
 
-            const wrapper = this.doc.createElement("blockquote");
+            const wrapper = document.createElement("blockquote");
 
             wrapper.appendChild(node);
 

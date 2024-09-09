@@ -1,32 +1,22 @@
 import { RefObject } from "react";
 
 export abstract class Tool<T> {
-    protected readonly iframeRef: RefObject<HTMLIFrameElement>;
+    protected readonly editorRef: RefObject<HTMLDivElement>;
 
-    protected get doc(): Document {
-        const doc = this.iframeRef.current?.contentDocument;
-
-        if (!doc) {
-            throw new Error("iframe has no document");
-        }
-
-        return doc;
-    }
-
-    constructor(iframeRef: RefObject<HTMLIFrameElement>) {
-        this.iframeRef = iframeRef;
+    constructor(iframeRef: RefObject<HTMLDivElement>) {
+        this.editorRef = iframeRef;
     }
 
     abstract run(params: T): void;
 
     protected focus(node: Node) {
-        const selection = this.doc.getSelection();
+        const selection = document.getSelection();
 
         if (!selection) {
             return;
         }
 
-        const range = this.doc.createRange();
+        const range = document.createRange();
 
         range.selectNodeContents(node);
 
@@ -34,10 +24,14 @@ export abstract class Tool<T> {
 
         selection.addRange(range);
 
-        this.doc.body.focus();
+        this.editorRef.current?.focus();
     }
 
     protected getParentElements(node: Node, elements: HTMLElement[] = []): HTMLElement[] {
+        if (node === this.editorRef.current) {
+            return elements;
+        }
+        
         if (node.nodeType === Node.ELEMENT_NODE) {
             elements.push(node as HTMLElement);
         }

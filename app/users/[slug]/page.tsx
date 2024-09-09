@@ -32,6 +32,9 @@ export default async function Page({ params }: Props) {
         where(t, { eq }) {
             return eq(t.userId, user.id);
         },
+        orderBy(t, { desc }) {
+            return desc(t.createdAt);
+        }
     });
 
     return (
@@ -79,20 +82,19 @@ export default async function Page({ params }: Props) {
                 <Tab href={`/@${params.slug}/categories`}>카테고리</Tab>
                 <Tab href={`/@${params.slug}/intro`}>소개</Tab>
             </ul>
-            <ol>
+            <ol className="grid grid-cols-3 gap-4 py-4">
                 {posts.map((post) => (
                     <li key={post.id}>
-                        <Link className="flex-1 flex h-[180px] border-b" href={`/users/${user.id}/posts/${post.id}`}>
-                            <div className="flex-1 flex flex-col justify-between my-8 mx-4">
+                        <Link className="flex-1 flex aspect-[3/4] bg-white rounded" href={`/@${user.slug}/${post.slug}`}>
+                            <div className="flex-1 flex flex-col justify-between my-4 mx-4">
                                 <div>
                                     <h3 className="text-2xl font-semibold my-2">{post.title}</h3>
-                                    <p className="text-gray-500">이번에는 회고를 빡세게 진행했다.</p>
                                 </div>
-                                <div className="text-gray-500 flex items-center text-sm gap-2">
+                                <div className="text-gray-500 flex justify-between items-center text-sm gap-2">
                                     <time>{new Date(post.createdAt).toLocaleDateString()}</time>
                                     <span className="flex items-center">
                                         <MdOutlineBarChart size={16} />
-                                        &nbsp;300
+                                        &nbsp;{post.views}
                                     </span>
                                 </div>
                             </div>

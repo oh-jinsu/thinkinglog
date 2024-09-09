@@ -1,16 +1,14 @@
 "use client";
 
-import { useContext } from "react";
-import { EditorContext } from "./context";
-import ContentInput from "./content_input";
+import "./content.css";
+import { cn } from "@/parent/frontend/lib/element";
+import { DetailedHTMLProps, HTMLAttributes } from "react";
 
-export default function EditorContent() {
-    const { iframeRef } = useContext(EditorContext);
+type Props = DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
+
+export default function Content({ className, ... props} : Props) {
 
     return (
-        <>
-            <iframe id="content" className={"flex-1"} ref={iframeRef} />
-            <ContentInput />
-        </>
+        <div {...props} className={cn(className, "editor", "min-h-[100%] p-4 outline-none max-w-[768px] mx-auto w-full")}  />
     );
 }

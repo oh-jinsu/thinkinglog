@@ -9,7 +9,11 @@ export const findPostBySlug = cache(async (slug: string) => {
         },
         with: {
             category: true,
-            user: true,
+            user: {
+                with: {
+                    logo: true,
+                }
+            }
         },
     });
 

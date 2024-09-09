@@ -1,23 +1,23 @@
-import { useContext, useEffect, useRef, useState } from "react";
-import { EditorContext } from "./context";
+import {  useEffect, useState } from "react";
+import {  useEditor } from "./provider";
 
 export default function ContentInput() {
-    const { iframeRef } = useContext(EditorContext);
+    const { editorRef } = useEditor();
 
     const [state, setState] = useState("");
 
     useEffect(() => {
-        const doc = iframeRef.current?.contentDocument;
+        const editor = editorRef.current;
 
-        if (!doc) {
+        if (!editor) {
             return;
         }
 
         const observer = new MutationObserver(() => {
-            setState(doc.body.innerHTML);
+            setState(editor.innerHTML);
         });
 
-        observer.observe(doc.body, {
+        observer.observe(editor, {
             attributes: true,
             childList: true,
             subtree: true,
@@ -27,7 +27,7 @@ export default function ContentInput() {
         return () => {
             observer.disconnect();
         };
-    }, []);
+    }, [editorRef]);
 
     return <input type="hidden" name="content" value={state} />;
 }

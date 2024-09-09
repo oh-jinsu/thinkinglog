@@ -13,6 +13,9 @@
         @apply text-black;
     }
 
+    body {
+        background-color: #f9f9f9;
+    }
     a {
         @apply text-primary;
     }

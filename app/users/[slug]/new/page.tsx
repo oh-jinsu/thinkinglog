@@ -1,6 +1,6 @@
 import { findUserBySlug } from "@/frontend/cache/user";
-import EditorProvider from "@/frontend/components/editor/context";
 import Editor from "@/frontend/components/editor";
+import EditorProvider from "@/frontend/components/editor/provider";
 import FullscreenContainer from "@/frontend/components/fullscreen_container";
 import MainHeader from "@/frontend/components/main/header";
 import { roundedPrimaryButtonStyle } from "@/frontend/styles";
