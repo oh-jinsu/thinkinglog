@@ -12,9 +12,7 @@ type SavePostParams = {
     tags: string;
 };
 
-type CreatePostResult = {
-    id: string;
-};
+type CreatePostResult = typeof postTable.$inferSelect;
 
 export const savePostUseCase: UseCase<SavePostParams, CreatePostResult> = async ({
     id,
@@ -58,7 +56,7 @@ export const savePostUseCase: UseCase<SavePostParams, CreatePostResult> = async 
         }
     }
 
-    await data
+    const [result] = await data
         .insert(postTable)
         .values({
             id: postId,
@@ -77,9 +75,8 @@ export const savePostUseCase: UseCase<SavePostParams, CreatePostResult> = async 
                 content,
                 slug,
             },
-        });
+        })
+        .returning();
 
-    return {
-        id: postId,
-    };
+    return result;
 };

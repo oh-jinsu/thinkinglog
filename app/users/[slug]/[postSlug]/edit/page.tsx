@@ -9,7 +9,7 @@ import ActionForm from "@/parent/frontend/components/form";
 import SubmitButton from "@/parent/frontend/components/submit_button";
 import { cn } from "@/parent/frontend/lib/element";
 import { savePostAction } from "@/parent/frontend/actions/posts/save";
-import { buttonStyle } from "@/frontend/styles";
+import { roundedPrimaryButtonStyle } from "@/frontend/styles";
 
 export const dynamic = "force-dynamic";
 
@@ -40,7 +40,7 @@ export default async function Page({ params }: Props) {
             <FullscreenContainer className="flex flex-col">
                 <MainHeader>
                     <ActionForm action={savePostAction} className="flex gap-2">
-                        <SubmitButton className={cn("px-4 h-[36px]", buttonStyle)}>저장하기</SubmitButton>
+                        <SubmitButton className={cn("px-4 h-[36px]", roundedPrimaryButtonStyle)}>저장하기</SubmitButton>
                     </ActionForm>
                 </MainHeader>
                 <Editor user={user} />

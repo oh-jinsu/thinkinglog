@@ -15,7 +15,7 @@ export default async function Avatar({ slug }: Props) {
     const src = user.logo ? cdn(user.logo.key) : "/images/avatar.png";
 
     return (
-        <Link href="/me" className="w-[40px] h-[40px] overflow-hidden rounded-full">
+        <Link href={`/@${user.slug}`} className="w-[40px] h-[40px] overflow-hidden rounded-full">
             {user.logo ? (
                 <Image src={src} fill alt="avatar" />
             ) : (

@@ -4,8 +4,6 @@ import useImageUpload from "@/frontend/hooks/image_upload";
 import EditorToolButton from "./tool_button";
 import { useEditor } from "./context";
 import {
-    MdAddPhotoAlternate,
-    MdCode,
     MdFormatAlignCenter,
     MdFormatAlignLeft,
     MdFormatAlignRight,
@@ -17,15 +15,16 @@ import {
     MdLink,
     MdPhoto,
 } from "react-icons/md";
+import CodeToolButton from "./tools/code.button";
+import { QuoteTool } from "./tools/quote";
 
 export default function EditorToolbar() {
-    const { formatHeading, formatStyle, formatTextAlign, appendDivider } = useEditor();
+    const { iframeRef, formatHeading, formatStyle, formatTextAlign, appendDivider, wrapLink } = useEditor();
 
     const [upload, Input] = useImageUpload();
 
     return (
-        <div className="w-full flex mx-1 my-4 items-center flex-wrap">
-            <EditorToolButton onClick={() => formatHeading("h1")}>H1</EditorToolButton>
+        <div className="w-full flex mx-1 items-center overflow-x-auto overflow-y-hidden">
             <EditorToolButton onClick={() => formatHeading("h2")}>H2</EditorToolButton>
             <EditorToolButton onClick={() => formatHeading("h3")}>H3</EditorToolButton>
             <EditorToolButton onClick={() => formatHeading("h4")}>H4</EditorToolButton>
@@ -40,19 +39,17 @@ export default function EditorToolbar() {
                 <MdFormatStrikethrough size={24} />
             </EditorToolButton>
             <span className="text-gray-200 mx-2">|</span>
-            <EditorToolButton>
-                <MdPhoto size={24} onClick={upload} />
+            <EditorToolButton onClick={upload}>
+                <MdPhoto size={24} />
                 <Input />
             </EditorToolButton>
-            <EditorToolButton>
+            <EditorToolButton onClick={() => wrapLink()}>
                 <MdLink size={24} />
             </EditorToolButton>
-            <EditorToolButton>
+            <EditorToolButton onClick={() => new QuoteTool(iframeRef).run()}>
                 <MdFormatQuote size={24} />
             </EditorToolButton>
-            <EditorToolButton>
-                <MdCode size={24} />
-            </EditorToolButton>
+            <CodeToolButton />
             <EditorToolButton onClick={() => appendDivider()}>
                 <MdHorizontalRule size={24} />
             </EditorToolButton>

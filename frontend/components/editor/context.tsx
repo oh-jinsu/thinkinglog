@@ -2,11 +2,14 @@
 
 import { postTable } from "@/backend/db";
 import { createContext, useContext, useEffect, useRef } from "react";
+import { QuoteTool } from "./tools/quote";
 
 export type EditorContextProps = {
     iframeRef: React.MutableRefObject<HTMLIFrameElement | null>;
     post?: typeof postTable.$inferSelect;
+    withDocument: (callback: (doc: Document) => void) => void;
     wrapContent: (tag: keyof HTMLElementTagNameMap) => void;
+    wrapLink: () => void;
     formatHeading: (heading: "h1" | "h2" | "h3" | "h4") => void;
     formatStyle: (style: "b" | "i" | "del") => void;
     formatTextAlign: (align: "left" | "center" | "right") => void;
@@ -45,7 +48,63 @@ export default function EditorProvider({ children, post }: Props) {
         doc.body.innerHTML = post?.content || "";
     }, [iframeRef, post]);
 
-    const wrapContent = (tag: keyof HTMLElementTagNameMap, replace: (keyof HTMLElementTagNameMap)[] = []) => {
+    useEffect(() => {
+        const iframe = iframeRef.current;
+
+        if (!iframe) {
+            return;
+        }
+
+        const append = () => {
+            const doc = iframe.contentDocument;
+
+            if (!doc) {
+                return;
+            }
+
+            const last = doc.body.lastElementChild;
+
+            if (!last || !last.querySelector("br")) {
+                const div = doc.createElement("div");
+
+                div.appendChild(doc.createElement("br"));
+
+                doc.body.appendChild(div);
+                const selection = doc.getSelection();
+
+                if (!selection) {
+                    return;
+                }
+
+                const range = doc.createRange();
+
+                range.selectNodeContents(div);
+
+                selection.removeAllRanges();
+
+                selection.addRange(range);
+
+                doc.body.focus();
+            }
+        };
+
+        iframe.addEventListener("click", append);
+
+        const onKeydown = (event: KeyboardEvent) => {
+            if (event.key === "ArrowDown") {
+                append();
+            }
+        };
+
+        iframe.addEventListener("keydown", onKeydown);
+
+        return () => {
+            iframe.removeEventListener("click", append);
+
+            iframe.removeEventListener("keydown", onKeydown);
+        };
+    }, []);
+    const withDocument = (callback: (doc: Document) => void) => {
         const iframe = iframeRef.current;
 
         if (!iframe) {
@@ -58,69 +117,67 @@ export default function EditorProvider({ children, post }: Props) {
             return;
         }
 
-        const selection = doc.getSelection();
+        callback(doc);
+    };
 
-        if (!selection || selection.rangeCount === 0) {
-            return;
-        }
+    const wrapContent = (tag: keyof HTMLElementTagNameMap, replace: (keyof HTMLElementTagNameMap)[] = []) => {
+        withDocument((doc) => {
+            const selection = doc.getSelection();
 
-        const range = selection.getRangeAt(0);
-
-        const container = range.commonAncestorContainer;
-
-        const wrapElement = (): Node => {
-            if (container.nodeType === Node.ELEMENT_NODE) {
-                const element = container as HTMLElement;
-
-                if (element.tagName.toLowerCase() === tag) {
-                    const inner = range.cloneContents();
-
-                    const node = doc.createTextNode(inner.textContent || "");
-
-                    element.replaceWith(node);
-
-                    return node;
-                }
-
-                if (replace.includes(element.tagName.toLowerCase() as keyof HTMLElementTagNameMap)) {
-                    const inner = range.cloneContents();
-
-                    const wrapper = doc.createElement(tag);
-
-                    wrapper.appendChild(inner);
-
-                    element.replaceWith(wrapper);
-
-                    return wrapper;
-                }
+            if (!selection || selection.rangeCount === 0) {
+                return;
             }
 
-            const inner = range.cloneContents();
+            const range = selection.getRangeAt(0);
 
-            const wrapper = doc.createElement(tag);
+            const container = range.commonAncestorContainer;
 
-            const node = doc.createTextNode(inner.textContent || "");
+            const wrapElement = (): Node => {
+                if (container.nodeType === Node.ELEMENT_NODE) {
+                    const element = container as HTMLElement;
 
-            wrapper.appendChild(node);
+                    if (element.tagName.toLowerCase() === tag) {
+                        const inner = range.cloneContents();
 
-            range.deleteContents();
+                        const node = doc.createTextNode(inner.textContent || "");
 
-            range.insertNode(wrapper);
+                        element.replaceWith(node);
 
-            return wrapper;
-        };
+                        return node;
+                    }
 
-        const node = wrapElement();
+                    if (replace.includes(element.tagName.toLowerCase() as keyof HTMLElementTagNameMap)) {
+                        const inner = range.cloneContents();
 
-        selection.removeAllRanges();
+                        const wrapper = doc.createElement(tag);
 
-        const newRange = doc.createRange();
+                        wrapper.appendChild(inner);
 
-        newRange.selectNodeContents(node);
+                        element.replaceWith(wrapper);
 
-        selection.addRange(newRange);
+                        return wrapper;
+                    }
+                }
 
-        doc.body.focus();
+                const inner = range.cloneContents();
+
+                const wrapper = doc.createElement(tag);
+
+                const node = doc.createTextNode(inner.textContent || "");
+
+                wrapper.appendChild(node);
+
+                range.deleteContents();
+
+                range.insertNode(wrapper);
+
+                return wrapper;
+            };
+
+            const node = wrapElement();
+
+            focus(node);
+        });
     };
 
     const formatHeading = (heading: "h1" | "h2" | "h3" | "h4") => {
@@ -132,115 +189,163 @@ export default function EditorProvider({ children, post }: Props) {
     };
 
     const formatTextAlign = (align: "left" | "center" | "right") => {
-        const iframe = iframeRef.current;
+        withDocument((doc) => {
+            const selection = doc.getSelection();
 
-        if (!iframe) {
-            return;
-        }
-
-        const doc = iframe.contentDocument;
-
-        if (!doc) {
-            return;
-        }
-
-        const selection = doc.getSelection();
-
-        if (!selection || selection.rangeCount === 0) {
-            return;
-        }
-
-        const range = selection.getRangeAt(0);
-
-        const container = range.commonAncestorContainer;
-
-        const alignElement = (): Node => {
-            if (container.nodeType === Node.ELEMENT_NODE) {
-                const element = container as HTMLElement;
-
-                element.style.textAlign = align;
-
-                return element;
+            if (!selection || selection.rangeCount === 0) {
+                return;
             }
 
-            const parent = container.parentElement;
+            const range = selection.getRangeAt(0);
 
-            if (parent) {
-                parent.style.textAlign = align;
+            const container = range.commonAncestorContainer;
 
-                return parent;
-            }
+            const alignElement = (): Node => {
+                if (container.nodeType === Node.ELEMENT_NODE) {
+                    const element = container as HTMLElement;
 
-            const wrapper = doc.createElement("div");
+                    element.style.textAlign = align;
 
-            wrapper.style.textAlign = align;
+                    return element;
+                }
 
-            range.surroundContents(wrapper);
+                const parent = container.parentElement;
 
-            return wrapper;
-        };
+                if (parent) {
+                    parent.style.textAlign = align;
 
-        const node = alignElement();
+                    return parent;
+                }
 
-        selection.removeAllRanges();
+                const wrapper = doc.createElement("div");
 
-        const newRange = doc.createRange();
+                wrapper.style.textAlign = align;
 
-        newRange.selectNodeContents(node);
+                range.surroundContents(wrapper);
 
-        selection.addRange(newRange);
+                return wrapper;
+            };
 
-        doc.body.focus();
+            const node = alignElement();
+
+            focus(node);
+        });
     };
 
     const appendDivider = () => {
-        const iframe = iframeRef.current;
+        withDocument((doc) => {
+            const selection = doc.getSelection();
 
-        if (!iframe) {
-            return;
-        }
+            if (!selection) {
+                return;
+            }
 
-        const doc = iframe.contentDocument;
+            const range = selection.getRangeAt(0);
 
-        if (!doc) {
-            return;
-        }
+            const divider = doc.createElement("hr");
 
-        const selection = doc.getSelection();
+            const br = doc.createElement("br");
 
-        if (!selection) {
-            return;
-        }
+            range.insertNode(br);
 
-        const range = selection.getRangeAt(0);
+            range.insertNode(divider);
 
-        const divider = doc.createElement("hr");
+            focus(br);
+        });
+    };
 
-        const br = doc.createElement("br");
+    const focus = (node: Node) => {
+        withDocument((doc) => {
+            const selection = doc.getSelection();
 
-        range.insertNode(br);
+            if (!selection) {
+                return;
+            }
+            selection.removeAllRanges();
 
-        range.insertNode(divider);
+            const newRange = doc.createRange();
 
-        selection.removeAllRanges();
+            newRange.selectNodeContents(node);
 
-        const newRange = doc.createRange();
+            selection.addRange(newRange);
 
-        newRange.selectNodeContents(br);
+            doc.body.focus();
+        });
+    };
 
-        selection.addRange(newRange);
+    const wrapLink = () => {
+        withDocument((doc) => {
+            const selection = doc.getSelection();
 
-        doc.body.focus();
+            if (!selection || selection.rangeCount === 0) {
+                return;
+            }
+
+            const href = prompt("링크를 입력해 주세요.", "https://");
+
+            if (!href) {
+                return;
+            }
+
+            const range = selection.getRangeAt(0);
+
+            const container = range.commonAncestorContainer;
+
+            const wrapElement = (): Node => {
+                if (container.nodeType === Node.ELEMENT_NODE) {
+                    const element = container as HTMLElement;
+
+                    if (element.tagName.toLowerCase() === "a") {
+                        const inner = range.cloneContents();
+
+                        const node = doc.createTextNode(inner.textContent || "");
+
+                        element.replaceWith(node);
+
+                        return node;
+                    }
+                }
+
+                const inner = range.cloneContents();
+
+                const node = doc.createTextNode(inner.textContent || "");
+
+                const wrapper = doc.createElement("a");
+
+                wrapper.appendChild(node);
+
+                range.deleteContents();
+
+                range.insertNode(wrapper);
+
+                return wrapper;
+            };
+
+            const node = wrapElement();
+
+            if (node.nodeType === Node.ELEMENT_NODE) {
+                const element = node as HTMLElement;
+
+                element.setAttribute("href", href);
+            }
+
+            focus(node);
+        });
     };
 
     const value = {
         iframeRef,
         post,
+        withDocument,
         wrapContent,
+        wrapLink,
         formatHeading,
         formatStyle,
         formatTextAlign,
         appendDivider,
+        tools: {
+            quote: new QuoteTool(iframeRef),
+        },
     };
 
     return (

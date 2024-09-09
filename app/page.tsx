@@ -1,5 +1,5 @@
 import { credentialTable, data, userTable } from "@/backend/db";
-import { buttonStyle } from "@/frontend/styles";
+import { roundedPrimaryButtonStyle } from "@/frontend/styles";
 import UserLayout from "@/frontend/user_layout";
 import { cn } from "@/parent/frontend/lib/element";
 import { hashSync } from "bcryptjs";
@@ -25,7 +25,7 @@ export default async function Home() {
     return (
         <UserLayout
             actions={
-                <Link href="/auth/signin" className={cn("px-4 h-[36px]", buttonStyle)}>
+                <Link href="/auth/signin" className={cn("px-4 h-[36px]", roundedPrimaryButtonStyle)}>
                     로그인
                 </Link>
             }

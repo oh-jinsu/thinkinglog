@@ -1,6 +1,6 @@
 export const toSlug = (str: string) => {
     return str
         .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/[^a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ]+/g, "-")
         .replace(/^-|-$/g, "");
 };

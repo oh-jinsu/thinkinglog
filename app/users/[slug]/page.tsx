@@ -2,7 +2,7 @@ import { data } from "@/backend/db";
 import UserLayout from "@/frontend/user_layout";
 import Link from "next/link";
 import { cn } from "@/parent/frontend/lib/element";
-import { buttonStyle } from "@/frontend/styles";
+import { roundedPrimaryButtonStyle } from "@/frontend/styles";
 import Image from "next/image";
 import { MdOutlineBarChart, MdOutlineSettings, MdPeopleOutline } from "react-icons/md";
 import { Metadata } from "next";
@@ -38,7 +38,7 @@ export default async function Page({ params }: Props) {
         <UserLayout
             actions={
                 <div className="flex gap-4 items-center">
-                    <Link href={`/@${params.slug}/new`} className={cn("px-4 h-[36px]", buttonStyle)}>
+                    <Link href={`/@${params.slug}/new`} className={cn("px-4 h-[36px]", roundedPrimaryButtonStyle)}>
                         새 글 쓰기
                     </Link>
                     <Link
@@ -51,8 +51,16 @@ export default async function Page({ params }: Props) {
             }
         >
             <div className="py-8 px-4 flex gap-8">
-                <figure className="relative rounded-full overflow-hidden w-[128px] h-[128px]">
-                    <Image src="/images/avatar.jpg" alt="avatar" fill className="object-cover" />
+                <figure className="relative rounded-full overflow-hidden w-[128px] h-[128px] flex items-center justify-center">
+                    <Image
+                        src="/images/avatar.jpg"
+                        alt="avatar"
+                        className="object-cover"
+                        priority
+                        quality={100}
+                        width={128}
+                        height={128}
+                    />
                 </figure>
                 <div className="flex-1 py-1">
                     <h1 className="text-3xl font-semibold">{user.name}</h1>

@@ -16,7 +16,7 @@ export const savePostAction = ServerAction(async (form) => {
 
     const id = form.get("id")?.toString();
 
-    const categoryId = form.get("categoryId")?.toString();
+    const categoryId = form.get("categoryId")?.toString() || undefined;
 
     const title = form.get("title")?.toString();
 
@@ -32,7 +32,7 @@ export const savePostAction = ServerAction(async (form) => {
 
     const tags = form.get("tags")?.toString() || "";
 
-    const { id: postId } = await savePostUseCase({ id, userId, categoryId, title, content, tags });
+    const { slug: postSlug } = await savePostUseCase({ id, userId, categoryId, title, content, tags });
 
-    redirect(`/@${slug}/${postId}/edit`);
+    redirect(`/@${encodeURIComponent(slug)}/${encodeURIComponent(postSlug)}`);
 });

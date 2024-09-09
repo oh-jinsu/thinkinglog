@@ -1,6 +1,6 @@
 import MainFooter from "@/frontend/components/main/footer";
 import MainHeader from "@/frontend/components/main/header";
-import { buttonStyle } from "@/frontend/styles";
+import { roundedPrimaryButtonStyle } from "@/frontend/styles";
 import { cn } from "@/parent/frontend/lib/element";
 import Link from "next/link";
 
@@ -9,7 +9,7 @@ export default function Home() {
         <>
             <MainHeader>
                 <div className="flex gap-4">
-                    <Link href="/auth/signin" className={cn("px-4 h-[36px]", buttonStyle)}>
+                    <Link href="/auth/signin" className={cn("px-4 h-[36px]", roundedPrimaryButtonStyle)}>
                         로그인
                     </Link>
                 </div>

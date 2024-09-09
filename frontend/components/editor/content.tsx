@@ -9,7 +9,7 @@ export default function EditorContent() {
 
     return (
         <>
-            <iframe id="content" className={"flex-1"} ref={iframeRef} />;
+            <iframe id="content" className={"flex-1"} ref={iframeRef} />
             <ContentInput />
         </>
     );

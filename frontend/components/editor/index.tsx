@@ -16,10 +16,10 @@ export default async function Editor({ user }: Props) {
     });
 
     return (
-        <div className="flex-1 flex flex-col max-w-[768px] mx-auto">
+        <div className="flex-1 flex flex-col max-w-[768px] w-full mx-auto">
             <select
                 name="categoryId"
-                className="w-full appearance-none cursor-pointer outline-none px-4 py-4 rounded text-gray-400 hover:bg-gray-100"
+                className="w-full appearance-none cursor-pointer outline-none px-4 py-3 rounded text-gray-400 hover:bg-gray-100"
             >
                 <option value="">카테고리</option>
                 {categories.map((category) => (
@@ -33,13 +33,13 @@ export default async function Editor({ user }: Props) {
                 name="title"
                 placeholder="제목을 입력하세요"
                 autoFocus
-                className="text-3xl w-full px-4 py-4 rounded outline-none hover:bg-gray-100"
+                className="text-3xl font-semibold w-full px-4 py-4 rounded outline-none hover:bg-gray-100"
             />
-            <input
+            {/* <input
                 type="tags"
                 placeholder="태그를 쉼표(,)로 구분해 입력하세요"
                 className="w-full px-4 py-4 rounded outline-none hover:bg-gray-100"
-            />
+            /> */}
             <EditorToolbar />
             <EditorContent />
         </div>
