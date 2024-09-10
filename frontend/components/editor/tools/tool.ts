@@ -28,12 +28,12 @@ export abstract class Tool<T> {
     }
 
     protected getParentElements(node: Node, elements: HTMLElement[] = []): HTMLElement[] {
-        if (node === this.editorRef.current) {
-            return elements;
-        }
-        
         if (node.nodeType === Node.ELEMENT_NODE) {
             elements.push(node as HTMLElement);
+        }
+
+        if (node === this.editorRef.current) {
+            return elements;
         }
 
         if (!node.parentNode) {

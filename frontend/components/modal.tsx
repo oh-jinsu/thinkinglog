@@ -6,9 +6,10 @@ import { createPortal } from "react-dom";
 type Props = {
     open: boolean;
     children?: ReactNode;
+    onClick?: MouseEventHandler;
 };
 
-export default function Modal({ open, children }: Props) {
+export default function Modal({ open, children, onClick }: Props) {
     const [container, setContainer] = React.useState<HTMLElement | null>(null);
 
     useEffect(() => {
@@ -19,8 +20,12 @@ export default function Modal({ open, children }: Props) {
         }
     }, []);
 
-    const onClick: MouseEventHandler = (event) => {
+    const onBackgroundClick: MouseEventHandler = (event) => {
         event.stopPropagation();
+
+        if (onClick) {
+            onClick(event);
+        }
     };
 
     return (
@@ -30,7 +35,7 @@ export default function Modal({ open, children }: Props) {
                 createPortal(
                     <div
                         className="fixed inset-0 flex justify-center items-center bg-gray-400 bg-opacity-25"
-                        onClick={onClick}
+                        onClick={onBackgroundClick}
                     >
                         {children}
                     </div>,

@@ -13,6 +13,7 @@ import {
     MdFormatStrikethrough,
     MdHorizontalRule,
     MdLink,
+    MdPending,
     MdPhoto,
 } from "react-icons/md";
 import CodeToolButton from "./tools/code_button";
@@ -21,7 +22,7 @@ import { QuoteTool } from "./tools/quote";
 export default function EditorToolbar() {
     const { editorRef, formatHeading, formatStyle, formatTextAlign, appendDivider, wrapLink } = useEditor();
 
-    const [upload, Input] = useImageUpload();
+    const [upload, Input, isPending] = useImageUpload();
 
     return (
         <div className="w-full flex mx-1 items-center overflow-x-auto overflow-y-hidden">
@@ -63,6 +64,11 @@ export default function EditorToolbar() {
             <EditorToolButton onClick={() => formatTextAlign("right")}>
                 <MdFormatAlignRight size={24} />
             </EditorToolButton>
+            {isPending && (
+                <div className="fixed left-0 right-0 bottom-0 top-0 bg-gray-700/25 flex justify-center items-center">
+                    <MdPending size={32} className="text-white animate-spin" />
+                </div>
+            )}
         </div>
     );
 }

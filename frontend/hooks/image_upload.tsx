@@ -1,9 +1,13 @@
 "use client";
 
-import { DetailedHTMLProps, InputHTMLAttributes, useRef } from "react";
+import { DetailedHTMLProps, InputHTMLAttributes, useRef, useTransition } from "react";
 import { useEditor } from "../components/editor/provider";
+import { uploadFile } from "@/parent/frontend/lib/file";
+import { cdn } from "../cdn";
 
 export default function useImageUpload() {
+    const [isPending, startTransition] = useTransition();
+
     const { editorRef } = useEditor();
 
     const inputRef = useRef<HTMLInputElement>(null);
@@ -34,70 +38,65 @@ export default function useImageUpload() {
         }
 
         for await (const file of Array.from(input.files)) {
-            await new Promise<void>((resolve, reject) => {
-                const reader = new FileReader();
+            startTransition(async () => {
+                const { key } = await uploadFile(file);
 
-                reader.onload = () => {
-                    const img = document.createElement("img");
+                const img = document.createElement("img");
 
-                    img.src = reader.result as string;
+                img.src = cdn(key);
 
-                    const figure = document.createElement("figure");
+                const figure = document.createElement("figure");
 
-                    figure.appendChild(img);
+                figure.appendChild(img);
 
-                    {
-                        const selection = document.getSelection();
-
-                        if (selection && selection.rangeCount > 0) {
-                            const range = selection.getRangeAt(0);
-
-                            range.insertNode(figure);
-                        } else {
-                            editor.appendChild(figure);
-                        }
-                    }
-
-                    editor.focus();
-
+                {
                     const selection = document.getSelection();
 
-                    if (!selection) {
-                        return reject();
+                    if (selection && selection.rangeCount > 0) {
+                        const range = selection.getRangeAt(0);
+
+                        range.insertNode(figure);
+                    } else {
+                        editor.appendChild(figure);
                     }
+                }
 
-                    const range = document.createRange();
+                editor.focus();
 
-                    range.selectNodeContents(figure);
+                const selection = document.getSelection();
 
-                    selection.removeAllRanges();
+                if (!selection) {
+                    return;
+                }
 
-                    selection.addRange(range);
+                const range = document.createRange();
 
-                    resolve();
-                };
+                range.selectNodeContents(figure);
 
-                reader.readAsDataURL(file);
+                selection.removeAllRanges();
+
+                selection.addRange(range);
             });
         }
-
     };
 
     type Props = DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
 
     function Input(props: Props) {
         return (
-            <input
-                {...props}
-                ref={inputRef}
-                type="file"
-                className="hidden"
-                accept="image/*"
-                multiple
-                onChange={onInputChange}
-            />
+            <>
+                <input
+                    {...props}
+                    ref={inputRef}
+                    type="file"
+                    className="hidden"
+                    accept="image/*"
+                    multiple
+                    onChange={onInputChange}
+                />
+            </>
         );
     }
 
-    return [upload, Input] as const;
+    return [upload, Input, isPending] as const;
 }

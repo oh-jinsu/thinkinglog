@@ -15,7 +15,21 @@ export class CodeTool extends Tool<Params> {
         if (!editor) {
             return;
         }
-        
+
+        const container = range.commonAncestorContainer;
+
+        const parents = this.getParentElements(container);
+
+        console.log(parents);
+
+        if (parents.every((parent) => parent !== editor)) {
+            return;
+        }
+
+        if (parents.some((parent) => parent.tagName === "PRE")) {
+            return;
+        }
+
         const language = "javascript";
 
         const wrappedCode = `<pre><code class="language-${language}">${code}</code></pre>`;
@@ -29,14 +43,6 @@ export class CodeTool extends Tool<Params> {
         const pre = doc.querySelector("pre")!;
 
         pre.spellcheck = false;
-
-        const container = range.commonAncestorContainer;
-
-        const parents = this.getParentElements(container);
-
-        if (parents.some((parent) => parent.tagName === "PRE")) {
-            return;
-        }
 
         range.deleteContents();
 

@@ -18,7 +18,6 @@ export default function CodeToolButton() {
     const [open, setOpen] = useState(false);
 
     const onClick: MouseEventHandler = () => {
-             
         const selection = document.getSelection();
 
         if (!selection || selection.rangeCount === 0) {
@@ -30,13 +29,11 @@ export default function CodeToolButton() {
         rangeRef.current = range;
 
         setOpen(true);
-        
     };
 
     const onSubmit: FormEventHandler<HTMLFormElement> = (e) => {
         e.preventDefault();
 
-        
         const form = e.currentTarget;
 
         const code = form.code.value as string;
@@ -45,15 +42,20 @@ export default function CodeToolButton() {
 
         const tool = new CodeTool(editorRef);
 
-   
-        tool.run({range: rangeRef.current!, code });
+        tool.run({ range: rangeRef.current!, code });
     };
 
     return (
         <EditorToolButton onClick={onClick}>
             <MdCode size={24} />
-            <Modal open={open}>
-                <form onSubmit={onSubmit} className="p-4 max-w-[600px] w-full bg-white shadow-lg rounded-lg m-4">
+            <Modal open={open} onClick={() => setOpen(false)}>
+                <form
+                    onSubmit={onSubmit}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                    }}
+                    className="p-4 max-w-[600px] w-full bg-white shadow-lg rounded-lg m-4"
+                >
                     <p className="mb-2">코드를 입력해 주세요.</p>
                     <textarea
                         name="code"

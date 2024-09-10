@@ -67,7 +67,7 @@ export default function EditorProvider({ children, post }: Props) {
                 range.selectNodeContents(div);
 
                 range.collapse();
-                
+
                 selection.removeAllRanges();
 
                 selection.addRange(range);
@@ -92,7 +92,6 @@ export default function EditorProvider({ children, post }: Props) {
             editor.removeEventListener("keydown", onKeydown);
         };
     }, []);
-    
 
     const wrapContent = (tag: keyof HTMLElementTagNameMap, replace: (keyof HTMLElementTagNameMap)[] = []) => {
         const editor = editorRef.current;
@@ -101,62 +100,61 @@ export default function EditorProvider({ children, post }: Props) {
             return;
         }
 
-            const selection = document.getSelection();
+        const selection = document.getSelection();
 
-            if (!selection || selection.rangeCount === 0) {
-                return;
-            }
+        if (!selection || selection.rangeCount === 0) {
+            return;
+        }
 
-            const range = selection.getRangeAt(0);
+        const range = selection.getRangeAt(0);
 
-            const container = range.commonAncestorContainer;
+        const container = range.commonAncestorContainer;
 
-            const wrapElement = (): Node => {
-                if (container.nodeType === Node.ELEMENT_NODE) {
-                    const element = container as HTMLElement;
+        const wrapElement = (): Node => {
+            if (container.nodeType === Node.ELEMENT_NODE) {
+                const element = container as HTMLElement;
 
-                    if (element.tagName.toLowerCase() === tag) {
-                        const inner = range.cloneContents();
+                if (element.tagName.toLowerCase() === tag) {
+                    const inner = range.cloneContents();
 
-                        const node = document.createTextNode(inner.textContent || "");
+                    const node = document.createTextNode(inner.textContent || "");
 
-                        element.replaceWith(node);
+                    element.replaceWith(node);
 
-                        return node;
-                    }
-
-                    if (replace.includes(element.tagName.toLowerCase() as keyof HTMLElementTagNameMap)) {
-                        const inner = range.cloneContents();
-
-                        const wrapper = document.createElement(tag);
-
-                        wrapper.appendChild(inner);
-
-                        element.replaceWith(wrapper);
-
-                        return wrapper;
-                    }
+                    return node;
                 }
 
-                const inner = range.cloneContents();
+                if (replace.includes(element.tagName.toLowerCase() as keyof HTMLElementTagNameMap)) {
+                    const inner = range.cloneContents();
 
-                const wrapper = document.createElement(tag);
+                    const wrapper = document.createElement(tag);
 
-                const node = document.createTextNode(inner.textContent || "");
+                    wrapper.appendChild(inner);
 
-                wrapper.appendChild(node);
+                    element.replaceWith(wrapper);
 
-                range.deleteContents();
+                    return wrapper;
+                }
+            }
 
-                range.insertNode(wrapper);
+            const inner = range.cloneContents();
 
-                return wrapper;
-            };
+            const wrapper = document.createElement(tag);
 
-            const node = wrapElement();
+            const node = document.createTextNode(inner.textContent || "");
 
-            focus(node);
-      
+            wrapper.appendChild(node);
+
+            range.deleteContents();
+
+            range.insertNode(wrapper);
+
+            return wrapper;
+        };
+
+        const node = wrapElement();
+
+        focus(node);
     };
 
     const formatHeading = (heading: "h1" | "h2" | "h3" | "h4") => {
@@ -172,47 +170,46 @@ export default function EditorProvider({ children, post }: Props) {
 
         if (!editor) {
             return;
-        } 
-            const selection = document.getSelection();
+        }
+        const selection = document.getSelection();
 
-            if (!selection || selection.rangeCount === 0) {
-                return;
+        if (!selection || selection.rangeCount === 0) {
+            return;
+        }
+
+        const range = selection.getRangeAt(0);
+
+        const container = range.commonAncestorContainer;
+
+        const alignElement = (): Node => {
+            if (container.nodeType === Node.ELEMENT_NODE) {
+                const element = container as HTMLElement;
+
+                element.style.textAlign = align;
+
+                return element;
             }
 
-            const range = selection.getRangeAt(0);
+            const parent = container.parentElement;
 
-            const container = range.commonAncestorContainer;
+            if (parent) {
+                parent.style.textAlign = align;
 
-            const alignElement = (): Node => {
-                if (container.nodeType === Node.ELEMENT_NODE) {
-                    const element = container as HTMLElement;
+                return parent;
+            }
 
-                    element.style.textAlign = align;
+            const wrapper = document.createElement("div");
 
-                    return element;
-                }
+            wrapper.style.textAlign = align;
 
-                const parent = container.parentElement;
+            range.surroundContents(wrapper);
 
-                if (parent) {
-                    parent.style.textAlign = align;
+            return wrapper;
+        };
 
-                    return parent;
-                }
+        const node = alignElement();
 
-                const wrapper = document.createElement("div");
-
-                wrapper.style.textAlign = align;
-
-                range.surroundContents(wrapper);
-
-                return wrapper;
-            };
-
-            const node = alignElement();
-
-            focus(node);
-   
+        focus(node);
     };
 
     const appendDivider = () => {
@@ -222,24 +219,23 @@ export default function EditorProvider({ children, post }: Props) {
             return;
         }
 
-            const selection = document.getSelection();
+        const selection = document.getSelection();
 
-            if (!selection) {
-                return;
-            }
+        if (!selection) {
+            return;
+        }
 
-            const range = selection.getRangeAt(0);
+        const range = selection.getRangeAt(0);
 
-            const divider = document.createElement("hr");
+        const divider = document.createElement("hr");
 
-            const br = document.createElement("br");
+        const br = document.createElement("br");
 
-            range.insertNode(br);
+        range.insertNode(br);
 
-            range.insertNode(divider);
+        range.insertNode(divider);
 
-            focus(br);
-        
+        focus(br);
     };
 
     const focus = (node: Node) => {
@@ -249,21 +245,20 @@ export default function EditorProvider({ children, post }: Props) {
             return;
         }
 
-            const selection = document.getSelection();
+        const selection = document.getSelection();
 
-            if (!selection) {
-                return;
-            }
-            selection.removeAllRanges();
+        if (!selection) {
+            return;
+        }
+        selection.removeAllRanges();
 
-            const newRange = document.createRange();
+        const newRange = document.createRange();
 
-            newRange.selectNodeContents(node);
+        newRange.selectNodeContents(node);
 
-            selection.addRange(newRange);
+        selection.addRange(newRange);
 
-            editor.focus();
-       
+        editor.focus();
     };
 
     const wrapLink = () => {
@@ -272,62 +267,61 @@ export default function EditorProvider({ children, post }: Props) {
         if (!editor) {
             return;
         }
-            const selection = document.getSelection();
+        const selection = document.getSelection();
 
-            if (!selection || selection.rangeCount === 0) {
-                return;
-            }
+        if (!selection || selection.rangeCount === 0) {
+            return;
+        }
 
-            const href = prompt("링크를 입력해 주세요.", "https://");
+        const href = prompt("링크를 입력해 주세요.", "https://");
 
-            if (!href) {
-                return;
-            }
+        if (!href) {
+            return;
+        }
 
-            const range = selection.getRangeAt(0);
+        const range = selection.getRangeAt(0);
 
-            const container = range.commonAncestorContainer;
+        const container = range.commonAncestorContainer;
 
-            const wrapElement = (): Node => {
-                if (container.nodeType === Node.ELEMENT_NODE) {
-                    const element = container as HTMLElement;
+        const wrapElement = (): Node => {
+            if (container.nodeType === Node.ELEMENT_NODE) {
+                const element = container as HTMLElement;
 
-                    if (element.tagName.toLowerCase() === "a") {
-                        const inner = range.cloneContents();
+                if (element.tagName.toLowerCase() === "a") {
+                    const inner = range.cloneContents();
 
-                        const node = document.createTextNode(inner.textContent || "");
+                    const node = document.createTextNode(inner.textContent || "");
 
-                        element.replaceWith(node);
+                    element.replaceWith(node);
 
-                        return node;
-                    }
+                    return node;
                 }
-
-                const inner = range.cloneContents();
-
-                const node = document.createTextNode(inner.textContent || "");
-
-                const wrapper = document.createElement("a");
-
-                wrapper.appendChild(node);
-
-                range.deleteContents();
-
-                range.insertNode(wrapper);
-
-                return wrapper;
-            };
-
-            const node = wrapElement();
-
-            if (node.nodeType === Node.ELEMENT_NODE) {
-                const element = node as HTMLElement;
-
-                element.setAttribute("href", href);
             }
 
-            focus(node);
-    
+            const inner = range.cloneContents();
+
+            const node = document.createTextNode(inner.textContent || "");
+
+            const wrapper = document.createElement("a");
+
+            wrapper.appendChild(node);
+
+            range.deleteContents();
+
+            range.insertNode(wrapper);
+
+            return wrapper;
+        };
+
+        const node = wrapElement();
+
+        if (node.nodeType === Node.ELEMENT_NODE) {
+            const element = node as HTMLElement;
+
+            element.setAttribute("href", href);
+        }
+
+        focus(node);
     };
 
     const value = {

@@ -20,8 +20,8 @@ export default async function Editor({ user }: Props) {
             <div className="max-w-[768px] w-full mx-auto">
                 <select
                     name="categoryId"
-                    className="w-full appearance-none cursor-pointer outline-none px-4 py-3 rounded text-gray-400 hover:bg-gray-100"
-                    >
+                    className="w-full appearance-none cursor-pointer outline-none px-4 py-3 rounded text-gray-400 bg-transparent hover:bg-gray-100"
+                >
                     <option value="">카테고리</option>
                     {categories.map((category) => (
                         <option key={category.id} value={category.id}>
@@ -34,8 +34,8 @@ export default async function Editor({ user }: Props) {
                     name="title"
                     placeholder="제목을 입력하세요"
                     autoFocus
-                    className="text-3xl font-semibold w-full px-4 py-4 rounded outline-none hover:bg-gray-100"
-                    />
+                    className="text-3xl font-semibold w-full px-4 py-4 rounded outline-none bg-transparent hover:bg-gray-100"
+                />
                 {/* <input
                     type="tags"
                     placeholder="태그를 쉼표(,)로 구분해 입력하세요"

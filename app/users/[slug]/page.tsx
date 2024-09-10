@@ -9,8 +9,6 @@ import { Metadata } from "next";
 import { findUserBySlug } from "@/frontend/cache/user";
 import Tab from "@/frontend/components/tab";
 
-export const dynamic = "force-dynamic";
-
 type Props = {
     params: {
         slug: string;
@@ -34,7 +32,7 @@ export default async function Page({ params }: Props) {
         },
         orderBy(t, { desc }) {
             return desc(t.createdAt);
-        }
+        },
     });
 
     return (
@@ -85,7 +83,10 @@ export default async function Page({ params }: Props) {
             <ol className="grid grid-cols-3 gap-4 py-4">
                 {posts.map((post) => (
                     <li key={post.id}>
-                        <Link className="flex-1 flex aspect-[3/4] bg-white rounded" href={`/@${user.slug}/${post.slug}`}>
+                        <Link
+                            className="flex-1 flex aspect-[3/4] bg-white rounded"
+                            href={`/@${user.slug}/${post.slug}`}
+                        >
                             <div className="flex-1 flex flex-col justify-between my-4 mx-4">
                                 <div>
                                     <h3 className="text-2xl font-semibold my-2">{post.title}</h3>

@@ -1,7 +1,15 @@
+import { cdn } from "@/frontend/cdn";
 import { APIException } from "@/parent/backend/api/exception";
 import { signFileAPI } from "@/parent/backend/api/files/sign";
 
-export const uploadFile = async (file: File, metadata: unknown = {}) => {
+export const uploadFile = async (
+    file: File,
+    metadata: unknown = {},
+): Promise<{
+    fileId: string;
+    key: string;
+    href: string;
+}> => {
     const { name, type, size } = file;
 
     const res = await signFileAPI.fetch({ body: { name, type, size, metadata } });
@@ -10,15 +18,12 @@ export const uploadFile = async (file: File, metadata: unknown = {}) => {
         throw res;
     }
 
-    const { id, signedUrl } = res;
+    const { id: fileId, key, signedUrl } = res;
 
     {
         const res = await fetch(signedUrl, {
             method: "PUT",
             body: file,
-            headers: {
-                "Content-Type": type,
-            },
         });
 
         if (!res.ok) {
@@ -27,6 +32,8 @@ export const uploadFile = async (file: File, metadata: unknown = {}) => {
     }
 
     return {
-        id,
+        fileId,
+        key,
+        href: cdn(key),
     };
 };
