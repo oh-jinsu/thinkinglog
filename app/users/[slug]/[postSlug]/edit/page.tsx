@@ -1,5 +1,4 @@
 import { data } from "@/backend/db";
-import EditorProvider from "@/frontend/components/editor/context";
 import Editor from "@/frontend/components/editor";
 import FullscreenContainer from "@/frontend/components/fullscreen_container";
 import { notFound } from "next/navigation";
@@ -10,6 +9,7 @@ import SubmitButton from "@/parent/frontend/components/submit_button";
 import { cn } from "@/parent/frontend/lib/element";
 import { savePostAction } from "@/parent/frontend/actions/posts/save";
 import { roundedPrimaryButtonStyle } from "@/frontend/styles";
+import EditorProvider from "@/frontend/components/editor/provider";
 
 export const dynamic = "force-dynamic";
 
