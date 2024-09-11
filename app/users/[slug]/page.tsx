@@ -4,10 +4,11 @@ import Link from "next/link";
 import { cn } from "@/parent/frontend/lib/element";
 import { roundedPrimaryButtonStyle } from "@/frontend/styles";
 import Image from "next/image";
-import { MdOutlineBarChart, MdOutlineSettings, MdPeopleOutline } from "react-icons/md";
+import { MdOutlineSettings, MdPeopleOutline } from "react-icons/md";
 import { Metadata } from "next";
 import { findUserBySlug } from "@/frontend/cache/user";
 import Tab from "@/frontend/components/tab";
+import PostCard from "@/frontend/components/post_card";
 
 type Props = {
     params: {
@@ -75,32 +76,14 @@ export default async function Page({ params }: Props) {
                     </div>
                 </div>
             </div>
-            <ul className="flex mt-4">
+            <ul className="flex mt-4 z-[100] sticky top-[55px] bg-background">
                 <Tab href={`/@${params.slug}`}>게시글</Tab>
                 <Tab href={`/@${params.slug}/categories`}>카테고리</Tab>
                 <Tab href={`/@${params.slug}/intro`}>소개</Tab>
             </ul>
             <ol className="grid grid-cols-3 gap-4 py-4">
                 {posts.map((post) => (
-                    <li key={post.id}>
-                        <Link
-                            className="flex-1 flex aspect-[3/4] bg-white rounded"
-                            href={`/@${user.slug}/${post.slug}`}
-                        >
-                            <div className="flex-1 flex flex-col justify-between my-4 mx-4">
-                                <div>
-                                    <h3 className="text-2xl font-semibold my-2">{post.title}</h3>
-                                </div>
-                                <div className="text-gray-500 flex justify-between items-center text-sm gap-2">
-                                    <time>{new Date(post.createdAt).toLocaleDateString()}</time>
-                                    <span className="flex items-center">
-                                        <MdOutlineBarChart size={16} />
-                                        &nbsp;{post.views}
-                                    </span>
-                                </div>
-                            </div>
-                        </Link>
-                    </li>
+                    <PostCard key={post.id} user={user} item={post} />
                 ))}
             </ol>
         </UserLayout>

@@ -1,6 +1,6 @@
 export const labelStyle = "block mt-2 mb-4";
 
-export const inputBackgroundStyle = "border bg-gray-50 outline-none";
+export const inputBackgroundStyle = "border bg-gray-100 outline-none";
 
 export const formInputStyle = `rounded text-[16px] w-full h-fit py-2 px-3 ${inputBackgroundStyle}`;
 

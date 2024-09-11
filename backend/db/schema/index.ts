@@ -84,10 +84,12 @@ export const categoryRelations = relations(categoryTable, ({ one, many }) => ({
 export const postTable = pgTable("posts", {
     id: uuid("id").primaryKey(),
     categoryId: uuid("categoryId").references(() => categoryTable.id),
+    thumbnailId: uuid("thumbnailId").references(() => fileTable.id),
     userId: uuid("userId")
         .notNull()
         .references(() => userTable.id),
     title: text("title").notNull(),
+    description: text("description").notNull().default(""),
     content: text("content").notNull(),
     slug: text("slug").notNull(),
     tags: text("tags"),
@@ -104,5 +106,9 @@ export const postRelations = relations(postTable, ({ one }) => ({
     category: one(categoryTable, {
         fields: [postTable.categoryId],
         references: [categoryTable.id],
+    }),
+    thumbnail: one(fileTable, {
+        fields: [postTable.thumbnailId],
+        references: [fileTable.id],
     }),
 }));
